@@ -1,6 +1,6 @@
 /**
  * Wiener Linien Live Map - Frontend JavaScript
- * 
+ *
  * This file handles the interactive map functionality, real-time updates,
  * and WebSocket connections for live vehicle tracking and disruption alerts.
  */
@@ -165,7 +165,7 @@ async function initializeMap() {
     // Initialize WebSocket connection
     initializeWebSocket();
 
-    // Scale vehicle markers with zoom (grow when zooming in, shrink when out)
+    // Scale vehicle markers with zoom (shrink when zooming in, grow when out)
     map.on('zoomend', refreshVehicleMarkerSizes);
 
     // Load initial data
@@ -1348,15 +1348,17 @@ function createVehicleMarker(vehicle) {
     return marker;
 }
 
-// Vehicle marker sizing: markers scale with the map zoom instead of staying a
-// fixed pixel size (which felt inverted - tiny when zoomed in, huge when out).
+// Vehicle marker sizing: divIcons are screen pixels, so markers shrink as you
+// zoom in (less clutter at street level) and grow as you zoom out (stay
+// visible at city level). Note the exponent is (BASE_ZOOM - zoom): flipping
+// it makes markers grow when zooming in, which is the inverted behaviour.
 const VEHICLE_BASE_SIZE = 32;
 const VEHICLE_BASE_ZOOM = 14;
 const VEHICLE_MIN_SIZE = 16;
 const VEHICLE_MAX_SIZE = 96;
 
 function vehicleMarkerSize(zoom) {
-    const size = Math.round(VEHICLE_BASE_SIZE * Math.pow(2, zoom - VEHICLE_BASE_ZOOM));
+    const size = Math.round(VEHICLE_BASE_SIZE * Math.pow(2, VEHICLE_BASE_ZOOM - zoom));
     return Math.max(VEHICLE_MIN_SIZE, Math.min(VEHICLE_MAX_SIZE, size));
 }
 
