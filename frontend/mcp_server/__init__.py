@@ -1,7 +1,7 @@
 """
-Vienna Transit MCP Server
+publictransport-mcp server.
 
-FastMCP 2.13 compliant MCP server for Vienna public transport.
+FastMCP 3.4 compliant MCP server for Vienna public transport.
 Provides tools for station search, departures, journey planning, and service status.
 """
 

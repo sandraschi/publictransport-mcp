@@ -1,8 +1,5 @@
 # MCP Server Dependencies
 # Add these to main requirements.txt when ready
 
-fastmcp>=2.13.0
+fastmcp>=3.4.4,<4
 pydantic>=2.5.0
-
-
-

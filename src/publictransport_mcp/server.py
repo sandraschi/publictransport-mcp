@@ -1,5 +1,5 @@
 """
-Vienna Transit MCP Server - FastMCP 3.x Compliant
+publictransport-mcp server - FastMCP 3.4 (exact version logged at startup).
 
 This server provides MCP tools for Vienna public transport information.
 It runs with stdio transport for Claude Desktop integration.
@@ -15,6 +15,13 @@ import sys
 from pathlib import Path
 
 from fastmcp import FastMCP
+
+try:
+    from importlib.metadata import version as _dist_version
+
+    _FASTMCP_VERSION = _dist_version("fastmcp").split("+")[0]
+except Exception:
+    _FASTMCP_VERSION = "unknown"
 
 # Add project roots to path for imports
 _project_root = Path(__file__).parent.parent.parent
@@ -112,7 +119,7 @@ register_journey_tool(mcp)
 # Register tools - Route Info
 register_routes_tool(mcp)
 
-logger.info("Vienna Transit MCP Server initialized with FastMCP 3.x")
+logger.info(f"publictransport-mcp initialized with FastMCP {_FASTMCP_VERSION}")
 logger.info("Tools, resources and prompts registered successfully")
 
 # Export for FastMCP CLI

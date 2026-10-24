@@ -2,6 +2,13 @@
 
 from fastmcp import FastMCP
 
+try:
+    from importlib.metadata import version as _dist_version
+
+    _FASTMCP_VERSION = _dist_version("fastmcp").split("+")[0]
+except Exception:
+    _FASTMCP_VERSION = "unknown"
+
 
 def register_help_tool(mcp: FastMCP) -> None:
     """Register the help tool with the MCP server."""
@@ -1345,7 +1352,7 @@ except Exception:
 
 ## FastMCP Framework
 
-Built on **FastMCP 2.13**:
+Built on **FastMCP VERSION_PLACEHOLDER**:
 - Async tool execution
 - Resource discovery
 - Prompt templates
@@ -1358,4 +1365,4 @@ Built on **FastMCP 2.13**:
 3. **Trip caching/optimization**
 4. **Multi-language support**
 5. **Offline GTFS mode**
-"""
+""".replace("VERSION_PLACEHOLDER", _FASTMCP_VERSION)
