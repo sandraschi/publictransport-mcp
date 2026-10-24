@@ -1,4 +1,4 @@
-# Vienna Transit app image (frontend app only - SQLite, no database service).
+# publictransport-mcp app image (frontend app only - SQLite, no database service).
 # Build context is the REPO ROOT so shared assets are available.
 FROM python:3.11-slim
 

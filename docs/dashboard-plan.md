@@ -1,6 +1,7 @@
 # Dashboard Strategy — Wiener Linien Observability
 
 ## Goals
+
 - Deliver two complementary dashboards:
   - **Operations Control** (Grafana): deep technical state for engineering/SRE.
   - **Commuter Status Board** (frontend page or Grafana kiosk mode): passenger-friendly summary of live service conditions.
@@ -8,6 +9,7 @@
 - Keep data sources unified (Loki logs, loader heartbeat, vehicle snapshots, Wiener Linien traffic info).
 
 ## Operations Dashboard Enhancements (Grafana)
+
 - **Heartbeat Stat**: parse `HEARTBEAT stage=...` log lines to show last loader stage + age. Alert if stale beyond 15 minutes.
 - **Loader Duration Panel**: logfmt `duration_seconds` fields and chart per-stage run times.
 - **Vehicle Snapshot Metrics**: count vehicles per line/type (expose via structured logs or Prometheus endpoint).
@@ -15,6 +17,7 @@
 - **Alerting**: Grafana rules for heartbeat lapse, spike in API 5xx, vehicle count dropping below threshold.
 
 ## Commuter Status Board
+
 - **Headline Cards**:
   - Global status (Good Service / Minor Delays / Major Disruption).
   - Active alerts count (from trafficInfo).
@@ -29,17 +32,19 @@
   - Show user-selected stops (requires simple local storage).
 
 ## Data & Implementation Notes
-- **Heartbeat Source**: `scripts/load_gtfs_to_db.py` emits logfmt heartbeat entries; Promtail ships them to Loki.
+
+- **Heartbeat Source**: the gtfs-mcp snapshot refresh (feed depot) plus
+  `web_sota` backend `/api/health`; Promtail ships them to Loki.
+  (The old `scripts/load_gtfs_to_db.py` loader was retired in Phase 3.)
 - **Vehicle Telemetry**: `frontend/vehicle_service.py` already aggregates snapshots—extend logs with per-refresh counts.
 - **Traffic Alerts**: integrate `/ogd_realtime/trafficInfo` fetcher, cache for UI + logs.
 - **Frontend Page**: add route `/status` backed by new template/component; reuse Socket.IO stream for live updates.
 - **Grafana Provisioning**: extend `grafana/provisioning/dashboards/wiener_linien_dashboard.json` with new stat/panel definitions.
 
 ## Next Steps
+
 1. Finish heartbeat ingestion (Grafana stat, alert rule).
 2. Instrument vehicle snapshot logger with summary metrics.
 3. Build commuter dashboard UI scaffold (cards + alert ticker).
 4. Hook up trafficInfo polling & persistence.
 5. Polish visuals, add kiosk mode instructions.
-
-

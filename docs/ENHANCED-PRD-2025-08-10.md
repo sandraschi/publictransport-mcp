@@ -1,6 +1,6 @@
-# Vienna Transit MCP Server - Enhanced Product Requirements Document
+# publictransport-mcp server - Enhanced Product Requirements Document
 
-**Project**: PublicTransport → Vienna Transit MCP Server  
+**Project**: PublicTransport → publictransport-mcp server  
 **Version**: 2.0 (Dual-Standard Architecture)  
 **Date**: August 10, 2025 (Updated: January 15, 2025)  
 **Status**: ✅ **IMPLEMENTED - Production Ready**
@@ -16,7 +16,7 @@ Claude and other AI assistants.
 
 ### Implementation Status: ✅ COMPLETE
 
-The Vienna Transit MCP Server has been successfully implemented as a **dual-standard architecture**:
+The publictransport-mcp server has been successfully implemented as a **dual-standard architecture**:
 
 - **FastAPI Web Application**: Interactive real-time transit visualization (existing)
 - **FastMCP MCP Server**: AI assistant integration for Claude Desktop (✅ NEW - Complete)
@@ -28,7 +28,7 @@ Both interfaces share the same backend logic, providing a unified experience acr
 - ✅ **4 MCP Tools** fully implemented and tested
 - ✅ **3 Prompts** for AI assistant guidance
 - ✅ **5 Resources** for transit system reference
-- ✅ **FastMCP 2.13** compliant implementation
+- ✅ **FastMCP 3.4** compliant implementation
 - ✅ **Comprehensive test suite** (14 test files, 26+ test cases)
 - ✅ **Production-ready** code quality and documentation
 
@@ -85,7 +85,7 @@ def station_search(query: str) -> List[Station]:
 
 ```python
 # Production dependencies
-fastmcp>=2.13.0          # FastMCP 2.13 SDK (✅ Implemented)
+fastmcp>=3.4.4,<4          # FastMCP 3.4 SDK (✅ Implemented)
 pydantic>=2.5.0          # Data validation (✅ Implemented)
 requests>=2.31.0         # Wiener Linien API client (✅ Shared backend)
 # PostgreSQL              # GTFS static data (✅ Shared backend)
@@ -96,7 +96,7 @@ requests>=2.31.0         # Wiener Linien API client (✅ Shared backend)
 
 - ✅ **Dual-Standard Design**: FastAPI web app + FastMCP server
 - ✅ **Shared Backend**: Common data_loader, database, vehicle_service modules
-- ✅ **FastMCP 2.13**: Full compliance with latest MCP specification
+- ✅ **FastMCP 3.4**: Full compliance with latest MCP specification
 - ✅ **Production Ready**: Comprehensive testing, documentation, CI/CD
 
 ## Implementation Roadmap
@@ -172,10 +172,10 @@ requests>=2.31.0         # Wiener Linien API client (✅ Shared backend)
 
 ```bash
 # PyPI package for easy distribution
-pip install vienna-transit-mcp
+pip install publictransport-mcp
 
 # Or with uvx (recommended)
-uvx vienna-transit-mcp
+uvx publictransport-mcp
 ```
 
 ### Claude Desktop Configuration
@@ -183,9 +183,9 @@ uvx vienna-transit-mcp
 ```json
 {
   "mcpServers": {
-    "vienna-transit": {
+    "publictransport": {
       "command": "uvx",
-      "args": ["vienna-transit-mcp"]
+      "args": ["publictransport-mcp"]
     }
   }
 }
@@ -262,7 +262,7 @@ uvx vienna-transit-mcp
 
 1. ✅ **Leveraged Existing Work**: Reused Vienna API expertise and data processing
 2. ✅ **Dual-Standard Design**: Maintained web app while adding MCP server
-3. ✅ **FastMCP 2.13**: Latest MCP specification compliance
+3. ✅ **FastMCP 3.4**: Latest MCP specification compliance
 4. ✅ **Austrian Advantage**: Local expertise and German language support
 5. ✅ **Production Ready**: Comprehensive testing and quality assurance
 
