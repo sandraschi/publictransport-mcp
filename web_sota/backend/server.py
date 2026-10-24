@@ -3,10 +3,17 @@
 Serves the Vite dashboard (port 10896) on backend port 11170.
 Fleet-standard endpoints: /api/health, /api/status, /api/skills,
 /api/capabilities, /api/v1/diagnostics, POST /api/shutdown,
-LLM provider proxy (/api/llm/*), and the activity-log API.
+LLM provider proxy (/api/llm/*), per-city transit data (/api/cities,
+/api/lines, /api/stops/major with ?city=), and the activity-log API.
+
+Vienna is the only city with LIVE data (Wiener Linien OGD HTTP APIs).
+Other cities serve static GTFS timetable data via gtfs-mcp exports
+(`scripts/gtfs_data/cities/<id>/` with a manifest.json); live fields
+are honestly flagged (see `live` in /api/cities).
 """
 
 import asyncio
+import csv
 import hmac
 import json
 import os
@@ -18,6 +25,17 @@ from datetime import UTC, datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+try:
+    from frontend.gtfs_service import resolve_data_city as _resolve_data_city
+    from scripts.city_config import CITIES as _CITY_CONFIGS
+except Exception:
+    _CITY_CONFIGS = {}
+    _resolve_data_city = None
 
 import httpx
 from fastapi import FastAPI, Query, Request
@@ -41,6 +59,100 @@ def _load_json(name: str):
 
 MAJOR_STOPS = _load_json("major_stops.json")
 LINES_CATALOG = _load_json("lines.json")
+
+# --- Multi-city: static GTFS reads for non-Vienna cities ---------------------
+# Vienna is live (OGD HTTP APIs below). Every other city serves its gtfs-mcp
+# export (`scripts/gtfs_data/cities/<id>/manifest.json`); no live departures.
+_CITY_TABLES: dict[str, dict] = {}
+
+_GTFS_ROUTE_TYPES = {
+    "0": "tram",
+    "1": "metro",
+    "2": "rail",
+    "3": "bus",
+    "4": "ferry",
+    "5": "tram",
+    "6": "rail",
+    "7": "rail",
+    "11": "bus",
+    "12": "rail",
+}
+
+
+def _read_gtfs_csv(path: Path) -> list[dict]:
+    try:
+        with open(path, encoding="utf-8-sig", newline="") as fh:
+            return [dict(r) for r in csv.DictReader(fh)]
+    except Exception:
+        return []
+
+
+def _city_tables(city_id: str) -> dict | None:
+    """Parsed lines/stops for a non-Vienna city, or None when no data on disk."""
+    cid = (city_id or "").strip().lower()
+    if not cid or cid == "vienna" or _resolve_data_city is None:
+        return None
+    if cid in _CITY_TABLES:
+        return _CITY_TABLES[cid]
+    data_dir = _resolve_data_city(cid)
+    if data_dir is None:
+        return None
+    data_dir = Path(data_dir)
+    lines = []
+    for row in _read_gtfs_csv(data_dir / "routes.txt"):
+        short = (row.get("route_short_name") or "").strip()
+        long = (row.get("route_long_name") or "").strip()
+        color = (row.get("route_color") or "").strip().lstrip("#")
+        lines.append(
+            {
+                "name": short or long or row.get("route_id", "?"),
+                "long_name": long or short,
+                "type": _GTFS_ROUTE_TYPES.get((row.get("route_type") or "").strip(), "bus"),
+                "color": f"#{color}" if color else "#666666",
+            }
+        )
+    stops = []
+    for row in _read_gtfs_csv(data_dir / "stops.txt"):
+        try:
+            lat = float(row.get("stop_lat", ""))
+            lon = float(row.get("stop_lon", ""))
+        except (TypeError, ValueError):
+            continue
+        stops.append(
+            {
+                "name": (row.get("stop_name") or "").strip(),
+                "rbl": "",
+                "lat": lat,
+                "lon": lon,
+            }
+        )
+    tables = {"lines": lines, "stops": stops}
+    _CITY_TABLES[cid] = tables
+    return tables
+
+
+def _city_entry(key: str, cfg) -> dict:
+    data_dir = _resolve_data_city(key) if _resolve_data_city else None
+    entry = {
+        "key": key,
+        "code": key,
+        "name": cfg.name,
+        "timezone": cfg.timezone,
+        "language": cfg.language,
+        "data_loaded": data_dir is not None,
+        "data_source": (
+            "extracted-legacy"
+            if key == "vienna" and data_dir is not None
+            else ("gtfs-mcp-export" if data_dir is not None else "none")
+        ),
+        # Only Vienna has live OGD APIs (departures/disruptions/news).
+        "live": key == "vienna",
+    }
+    if cfg.map_center:
+        entry["map_center"] = {"lat": cfg.map_center[0], "lng": cfg.map_center[1]}
+        entry["map_zoom"] = cfg.map_zoom
+    return entry
+
 
 WL_BASE = "https://www.wienerlinien.at/ogd_realtime"
 
@@ -72,7 +184,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="My Wiener Linien", version="2.0.1", lifespan=lifespan)
+app = FastAPI(title="publictransport-mcp web API", version="1.1.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_EXPLICIT_ORIGINS,
@@ -98,7 +210,7 @@ async def status():
     return {
         "status": "ok",
         "service": "publictransport-mcp-webapi",
-        "version": "2.0.1",
+        "version": "1.1.0",
         "uptime_seconds": round(time.time() - STARTED_AT, 1),
     }
 
@@ -129,7 +241,7 @@ async def capabilities():
     routes = sorted({r.path for r in app.routes if hasattr(r, "path")})
     return {
         "name": "publictransport-mcp",
-        "version": "2.0.1",
+        "version": "1.1.0",
         "backend_port": int(os.getenv("WEB_PORT", "11170")),
         "endpoints": routes,
         "features": ["llm-proxy", "activity-log", "chat-skills"],
@@ -275,21 +387,65 @@ async def llm_chat(body: dict):
         return JSONResponse(status_code=502, content={"response": f"Error: {e}"})
 
 
+@app.get("/api/cities")
+async def cities():
+    """City catalog: every configured city, data_loaded truth, live flags.
+
+    Vienna (`live: true`) is served by the Wiener Linien OGD HTTP APIs.
+    Other cities serve static GTFS only, and only when their gtfs-mcp
+    export is on disk (`data_loaded: true`).
+    """
+    out = [_city_entry(key, cfg) for key, cfg in _CITY_CONFIGS.items()]
+    return {"cities": out, "count": len(out)}
+
+
 @app.get("/api/stops/major")
-async def stops_major():
+async def stops_major(city: str = Query("vienna", description="City key, see /api/cities")):
     """Curated major-stop table (verified RBLs + GTFS coords, see file header note)."""
-    return {"stops": MAJOR_STOPS, "count": len(MAJOR_STOPS)}
+    if city != "vienna":
+        tables = _city_tables(city)
+        if tables is None:
+            return JSONResponse(
+                status_code=404,
+                content={"city": city, "stops": [], "error": f"No GTFS data for '{city}' yet - load it with gtfs-mcp."},
+            )
+        return {"city": city, "live": False, "stops": tables["stops"], "count": len(tables["stops"])}
+    return {"city": "vienna", "live": True, "stops": MAJOR_STOPS, "count": len(MAJOR_STOPS)}
 
 
 @app.get("/api/lines")
-async def lines():
-    """Line catalog from the Wiener Linien GTFS feed (reference snapshot)."""
-    return {"lines": LINES_CATALOG, "count": len(LINES_CATALOG)}
+async def lines(city: str = Query("vienna", description="City key, see /api/cities")):
+    """Line catalog: Vienna GTFS reference snapshot, or a gtfs-mcp export per city."""
+    if city != "vienna":
+        tables = _city_tables(city)
+        if tables is None:
+            return JSONResponse(
+                status_code=404,
+                content={"city": city, "lines": [], "error": f"No GTFS data for '{city}' yet - load it with gtfs-mcp."},
+            )
+        return {"city": city, "live": False, "lines": tables["lines"], "count": len(tables["lines"])}
+    return {"city": "vienna", "live": True, "lines": LINES_CATALOG, "count": len(LINES_CATALOG)}
 
 
 @app.get("/api/departures")
-async def departures(rbl: str = Query(..., description="Wiener Linien RBL stop code")):
-    """Live departures for one stop via the OGD monitor API (no key needed)."""
+async def departures(
+    rbl: str = Query(..., description="Wiener Linien RBL stop code"),
+    city: str = Query("vienna", description="City key, see /api/cities"),
+):
+    """Live departures for one stop via the OGD monitor API (no key needed).
+
+    Vienna-only: other cities have static GTFS timetables, no live API.
+    """
+    if city != "vienna":
+        return JSONResponse(
+            status_code=501,
+            content={
+                "city": city,
+                "rbl": rbl,
+                "departures": [],
+                "error": f"Live departures are Vienna-only (Wiener Linien OGD). '{city}' has static GTFS data only.",
+            },
+        )
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.get(f"{WL_BASE}/monitor", params={"rbl": rbl})

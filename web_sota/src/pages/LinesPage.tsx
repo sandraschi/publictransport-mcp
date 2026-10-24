@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, type LineInfo } from "../common/api";
 import { MAP_URL } from "../lib/config";
+import { useCityStore } from "../store/city";
 
 const TYPE_ORDER = ["metro", "tram", "nightbus", "bus", "rail", "unknown"];
 const TYPE_LABELS: Record<string, string> = {
@@ -31,10 +32,15 @@ export default function LinesPage() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [filter, setFilter] = useState("");
+	const city = useCityStore((s) => s.city);
+	const cityName = useCityStore((s) => s.current()?.name ?? s.city);
+	const live = useCityStore((s) => s.current()?.live ?? true);
 
 	useEffect(() => {
+		setLoading(true);
+		setError(null);
 		api
-			.lines()
+			.lines(city)
 			.then((d) => {
 				setLines(d.lines ?? []);
 				setLoading(false);
@@ -43,7 +49,7 @@ export default function LinesPage() {
 				setError(String(e));
 				setLoading(false);
 			});
-	}, []);
+	}, [city]);
 
 	const grouped = TYPE_ORDER.reduce<Record<string, LineInfo[]>>((acc, t) => {
 		acc[t] = [];
@@ -51,13 +57,11 @@ export default function LinesPage() {
 	}, {});
 
 	const q = filter.toLowerCase();
-	lines
-		.filter((l) => !q || l.name.toLowerCase().includes(q))
-		.forEach((l) => {
-			const t = normalizeType(l.type, l.name);
-			const bucket = grouped[t] ?? grouped.unknown;
-			if (bucket) bucket.push(l);
-		});
+	for (const l of lines) {
+		if (q && !l.name.toLowerCase().includes(q)) continue;
+		const bucket = grouped[normalizeType(l.type, l.name)] ?? grouped.unknown;
+		if (bucket) bucket.push(l);
+	}
 
 	return (
 		<div className="max-w-3xl mx-auto space-y-6" data-testid="lines-page">
@@ -73,8 +77,11 @@ export default function LinesPage() {
 					/>
 				</div>
 				<p className="mt-1 text-sm text-slate-300">
-					Vienna line catalog (GTFS reference snapshot). Badges open the line on
-					the native live map.
+					{cityName} line catalog
+					{live
+						? " (GTFS reference snapshot)."
+						: " (static GTFS - no live positions)."}{" "}
+					Badges open the line on the native live map.
 				</p>
 			</div>
 
@@ -114,7 +121,7 @@ export default function LinesPage() {
 									return (
 										<a
 											key={l.name}
-											href={`${MAP_URL}/line/${l.name}`}
+											href={`${MAP_URL}/line/${l.name}?city=${encodeURIComponent(city)}`}
 											target="_blank"
 											rel="noopener noreferrer"
 											className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-700 hover:border-gray-500 bg-gray-800 hover:bg-gray-750 transition-colors group"

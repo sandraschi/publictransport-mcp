@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, type Departure, type Station } from "../common/api";
+import { useCityStore } from "../store/city";
 
 const LINE_COLORS: Record<string, string> = {
 	metro: "bg-red-600",
@@ -47,6 +48,9 @@ function saveFavs(f: FavStop[]) {
 
 export default function DeparturePage() {
 	const [query, setQuery] = useState("");
+	const city = useCityStore((s) => s.city);
+	const cityName = useCityStore((s) => s.current()?.name ?? s.city);
+	const live = useCityStore((s) => s.current()?.live ?? true);
 	const [suggestions, setSuggestions] = useState<Station[]>([]);
 	const [selected, setSelected] = useState<Station | null>(null);
 	const [deps, setDeps] = useState<Departure[]>([]);
@@ -68,24 +72,31 @@ export default function DeparturePage() {
 		}
 	}, []);
 
-	// Fetch departures (live OGD monitor via backend)
-	const fetchDeps = useCallback(async (stop: Station) => {
-		if (!stop.rbl) return;
-		setLoading(true);
-		setError(null);
-		try {
-			const data = await api.departures(stop.rbl);
-			const sorted = [...(data.departures ?? [])].sort(
-				(a, b) => (a.countdown ?? 9999) - (b.countdown ?? 9999),
-			);
-			setDeps(sorted);
-			setLastUpdated(new Date());
-		} catch (e) {
-			setError(String(e));
-		} finally {
-			setLoading(false);
-		}
-	}, []);
+	// Fetch departures (live OGD monitor via backend - Vienna only)
+	const fetchDeps = useCallback(
+		async (stop: Station) => {
+			if (!stop.rbl) {
+				setDeps([]);
+				setLoading(false);
+				return;
+			}
+			setLoading(true);
+			setError(null);
+			try {
+				const data = await api.departures(stop.rbl, city);
+				const sorted = [...(data.departures ?? [])].sort(
+					(a, b) => (a.countdown ?? 9999) - (b.countdown ?? 9999),
+				);
+				setDeps(sorted);
+				setLastUpdated(new Date());
+			} catch (e) {
+				setError(String(e));
+			} finally {
+				setLoading(false);
+			}
+		},
+		[city],
+	);
 
 	// Auto-refresh every 30s
 	useEffect(() => {
@@ -104,11 +115,11 @@ export default function DeparturePage() {
 			return;
 		}
 		const tid = setTimeout(async () => {
-			const results = await api.searchStations(query);
+			const results = await api.searchStations(query, city);
 			setSuggestions(results);
 		}, 250);
 		return () => clearTimeout(tid);
-	}, [query]);
+	}, [query, city]);
 
 	function selectStop(s: Station) {
 		setSelected(s);
@@ -134,7 +145,9 @@ export default function DeparturePage() {
 			<div>
 				<h1 className="text-2xl font-bold text-white">Departure Board</h1>
 				<p className="mt-1 text-sm text-slate-300">
-					Live departures for 12 major stops (verified RBLs, OGD realtime).
+					{live
+						? "Live departures for major stops (verified RBLs, OGD realtime)."
+						: `${cityName} has static GTFS data only - live departure boards need Vienna (Wiener Linien OGD).`}
 				</p>
 			</div>
 
@@ -238,11 +251,12 @@ export default function DeparturePage() {
 			)}
 			{!loading && deps.length > 0 && (
 				<ul className="space-y-2" data-testid="departure-list">
-					{deps.slice(0, 20).map((d, i) => {
+					{deps.slice(0, 20).map((d) => {
+						const key = `${d.line}|${d.destination}|${d.time_planned ?? d.time_real ?? ""}`;
 						const { text, cls } = countdown(d.countdown);
 						return (
 							<li
-								key={i}
+								key={key}
 								className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 flex items-center gap-3"
 							>
 								{/* Line badge */}

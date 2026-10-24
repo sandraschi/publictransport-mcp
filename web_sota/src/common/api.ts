@@ -53,22 +53,41 @@ async function get<T>(path: string): Promise<T> {
 	return r.json();
 }
 
-let majorCache: Station[] | null = null;
+const majorCache: Map<string, Station[]> = new Map();
+const linesCache: Map<string, LineInfo[]> = new Map();
+
+export interface CityInfo {
+	key: string;
+	code?: string;
+	name: string;
+	timezone?: string;
+	data_loaded: boolean;
+	data_source: string;
+	live: boolean;
+	map_center?: { lat: number; lng: number };
+	map_zoom?: number;
+}
 
 export const api = {
-	/** Live departures for one stop (RBL) via the OGD monitor API. */
-	departures: (rbl: string) =>
+	/** City catalog with data_loaded truth and live flags. */
+	cities: () => get<{ cities: CityInfo[]; count: number }>("/api/cities"),
+
+	/** Live departures for one stop (RBL) via the OGD monitor API. Vienna-only. */
+	departures: (rbl: string, city = "vienna") =>
 		get<{ rbl: string; departures: Departure[]; count: number }>(
-			`/api/departures?rbl=${encodeURIComponent(rbl)}`,
+			`/api/departures?rbl=${encodeURIComponent(rbl)}&city=${encodeURIComponent(city)}`,
 		),
 
-	/** Curated major-stop table (verified RBLs + GTFS coords). */
-	majorStops: async (): Promise<Station[]> => {
-		if (!majorCache) {
-			const d = await get<{ stops: Station[] }>("/api/stops/major");
-			majorCache = d.stops ?? [];
-		}
-		return majorCache;
+	/** Major stops: Vienna RBL table, or the city's GTFS stops when loaded. */
+	majorStops: async (city = "vienna"): Promise<Station[]> => {
+		const hit = majorCache.get(city);
+		if (hit) return hit;
+		const d = await get<{ stops: Station[] }>(
+			`/api/stops/major?city=${encodeURIComponent(city)}`,
+		);
+		const stops = d.stops ?? [];
+		majorCache.set(city, stops);
+		return stops;
 	},
 
 	/** Live service disruptions via OGD trafficInfoList. */
@@ -77,8 +96,10 @@ export const api = {
 			"/api/disruptions",
 		),
 
-	/** Line catalog (GTFS reference snapshot). */
-	lines: async (): Promise<{ lines: LineInfo[] }> => {
+	/** Line catalog: Vienna GTFS snapshot, or the city's gtfs-mcp export. */
+	lines: async (city = "vienna"): Promise<{ lines: LineInfo[] }> => {
+		const hit = linesCache.get(city);
+		if (hit) return { lines: hit };
 		const d = await get<{
 			lines: Array<{
 				name: string;
@@ -86,20 +107,23 @@ export const api = {
 				type: string;
 				color: string;
 			}>;
-		}>("/api/lines");
-		return {
-			lines: (d.lines ?? []).map((l) => ({
-				name: l.name,
-				type: l.type,
-				color: l.color,
-				description: l.long_name,
-			})),
-		};
+		}>(`/api/lines?city=${encodeURIComponent(city)}`);
+		const lines = (d.lines ?? []).map((l) => ({
+			name: l.name,
+			type: l.type,
+			color: l.color,
+			description: l.long_name,
+		}));
+		linesCache.set(city, lines);
+		return { lines };
 	},
 
-	/** Name search over the major-stop table (client-side filter). */
-	searchStations: async (query: string): Promise<Station[]> => {
-		const stations = await api.majorStops();
+	/** Name search over the stop table (client-side filter). */
+	searchStations: async (
+		query: string,
+		city = "vienna",
+	): Promise<Station[]> => {
+		const stations = await api.majorStops(city);
 		const q = query.toLowerCase();
 		return stations
 			.filter((s) => s.name.toLowerCase().includes(q))

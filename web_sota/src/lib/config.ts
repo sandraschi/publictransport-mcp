@@ -3,8 +3,8 @@
 export const API_BASE =
 	import.meta.env.VITE_API_TARGET ?? "http://127.0.0.1:11170";
 
-// Native map app (frontend/app.py, Leaflet + sidebar). Fleet port 10722;
-// runs WITHOUT Docker - only postgres stays containerized (port 5433).
+// Native Leaflet map app (frontend/app.py). Runs as its own server -
+// embedded in the dashboard under /map via iframe, ?city= selects the city.
 export const MAP_URL = import.meta.env.VITE_MAP_URL ?? "http://localhost:10722";
 
 export const DOCS_URL =
