@@ -15,9 +15,9 @@ pub struct BackendProcess(pub Mutex<Option<Child>>);
 const BACKEND_NAME: &str = "publictransport-mcp-backend.exe";
 const BACKEND_PORT: u16 = 11170;
 const BACKEND_TAG: &str = "publictransport-mcp-backend-x86_64-pc-windows-msvc.exe";
-const ENV_PORT: &str = "MYWIENERLINIEN_PORT";
-const ENV_HOST: &str = "MYWIENERLINIEN_HOST";
-const ENV_TAURI: &str = "MYWIENERLINIEN_TAURI";
+const ENV_PORT: &str = "PUBLICTRANSPORT_PORT";
+const ENV_HOST: &str = "PUBLICTRANSPORT_HOST";
+const ENV_TAURI: &str = "PUBLICTRANSPORT_TAURI";
 
 fn dev_backend_path() -> Option<PathBuf> {
     if !cfg!(debug_assertions) {

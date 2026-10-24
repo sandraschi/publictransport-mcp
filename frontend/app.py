@@ -179,29 +179,29 @@ def _normalize_line_identifier(line_name: str) -> str:
 
 @fastapi_app.get("/", response_class=HTMLResponse)
 async def read_index(request: Request) -> HTMLResponse:
-    return TEMPLATES.TemplateResponse("index.html", {"request": request})
+    return TEMPLATES.TemplateResponse(request=request, name="index.html")
 
 
 @fastapi_app.get("/about", response_class=HTMLResponse)
 async def read_about(request: Request) -> HTMLResponse:
-    return TEMPLATES.TemplateResponse("about.html", {"request": request})
+    return TEMPLATES.TemplateResponse(request=request, name="about.html")
 
 
 @fastapi_app.get("/status", response_class=HTMLResponse)
 async def commuter_status_page(request: Request) -> HTMLResponse:
-    return TEMPLATES.TemplateResponse("status.html", {"request": request})
+    return TEMPLATES.TemplateResponse(request=request, name="status.html")
 
 
 @fastapi_app.get("/analytics", response_class=HTMLResponse)
 async def analytics_dashboard_page(request: Request) -> HTMLResponse:
     """Analytics dashboard page - Phase 3C."""
-    return TEMPLATES.TemplateResponse("analytics.html", {"request": request})
+    return TEMPLATES.TemplateResponse(request=request, name="analytics.html")
 
 
 @fastapi_app.get("/community", response_class=HTMLResponse)
 async def community_dashboard_page(request: Request) -> HTMLResponse:
     """Community dashboard page - Phase 5."""
-    return TEMPLATES.TemplateResponse("community.html", {"request": request})
+    return TEMPLATES.TemplateResponse(request=request, name="community.html")
 
 
 # Multi-City API (Phase 4) - NOTE: actual route handlers defined later using city_config
@@ -209,7 +209,7 @@ async def community_dashboard_page(request: Request) -> HTMLResponse:
 
 @fastapi_app.get("/line/{line_name}", response_class=HTMLResponse)
 async def read_line_info(request: Request, line_name: str) -> HTMLResponse:
-    return TEMPLATES.TemplateResponse("line_info.html", {"request": request, "line_name": line_name})
+    return TEMPLATES.TemplateResponse(request=request, name="line_info.html", context={"line_name": line_name})
 
 
 @fastapi_app.get("/api/vehicles")

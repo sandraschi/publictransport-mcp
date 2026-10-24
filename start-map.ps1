@@ -1,4 +1,4 @@
-param([switch]$Headless, [switch]$NoBrowser)
+﻿param([switch]$Headless, [switch]$NoBrowser)
 $ErrorActionPreference = "Stop"
 $ScriptRoot = Split-Path -Parent $PSCommandPath
 # Fleet port: 10722 = publictransport-mcp Frontend (native Leaflet map, no Docker)
@@ -6,6 +6,16 @@ $MapPort = 10722
 
 $env:PYTHONPATH = $ScriptRoot
 $env:PORT = "$MapPort"
+
+# Reuse if already healthy on $MapPort
+try {
+    $existing = Invoke-WebRequest -Uri "http://127.0.0.1:$MapPort/api/health" -TimeoutSec 2 -UseBasicParsing -ErrorAction Stop
+    if ($existing.StatusCode -eq 200) {
+        Write-Host "Map already running on port $MapPort." -ForegroundColor Green
+        if (-not $NoBrowser -and -not $Headless) { Start-Process "http://localhost:$MapPort/" }
+        exit 0
+    }
+} catch {}
 
 Write-Host 'Starting publictransport-mcp map (native, no Docker)...' -ForegroundColor Cyan
 Set-Location $ScriptRoot
@@ -15,7 +25,7 @@ Get-NetTCPConnection -LocalPort $MapPort -ErrorAction SilentlyContinue |
     ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }
 
 # Schedule data must exist: gtfs-mcp snapshot file (no database server).
-$snapPath = if ($env:GTFS_SNAPSHOT_PATH) { $env:GTFS_SNAPSHOT_PATH } else { Join-Path $ScriptRoot '..' 'gtfs-mcp' 'data' 'snapshots' 'vienna.db' }
+$snapPath = if ($env:GTFS_SNAPSHOT_PATH) { $env:GTFS_SNAPSHOT_PATH } else { Join-Path (Split-Path -Parent $ScriptRoot) 'gtfs-mcp\data\snapshots\vienna.db' }
 if (-not (Test-Path $snapPath)) {
     throw "GTFS snapshot not found at $snapPath. Add the Vienna feed in gtfs-mcp or set GTFS_SNAPSHOT_PATH."
 }
@@ -24,7 +34,7 @@ $childStyle = if ($Headless) { 'Hidden' } else { 'Normal' }
 
 # frontend/app.py serves the Leaflet map + sidebar + city selector from
 # frontend/templates + frontend/static (all in-repo, no container).
-Start-Process pwsh -ArgumentList '-NoProfile', '-Command', "uv run uvicorn app:app --host 127.0.0.1 --port $MapPort" -WorkingDirectory (Join-Path $ScriptRoot 'frontend') -WindowStyle $childStyle
+Start-Process powershell.exe -ArgumentList '-NoProfile', '-NoExit', '-Command', "uv run --project '$ScriptRoot' python -m uvicorn app:app --host 127.0.0.1 --port $MapPort" -WorkingDirectory (Join-Path $ScriptRoot 'frontend') -WindowStyle $childStyle
 
 # Readiness: TCP poll for /api/health (not a fixed sleep)
 $ready = $false

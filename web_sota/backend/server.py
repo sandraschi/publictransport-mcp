@@ -1,4 +1,4 @@
-"""My Wiener Linien web_sota backend (fleet-start UvicornTarget: server:app).
+"""PublicTransport web_sota backend (fleet-start UvicornTarget: server:app).
 
 Serves the Vite dashboard (port 10896) on backend port 11170.
 Fleet-standard endpoints: /api/health, /api/status, /api/skills,

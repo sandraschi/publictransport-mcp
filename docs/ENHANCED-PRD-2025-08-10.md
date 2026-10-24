@@ -1,6 +1,6 @@
 # Vienna Transit MCP Server - Enhanced Product Requirements Document
 
-**Project**: MyWienerLinien → Vienna Transit MCP Server  
+**Project**: PublicTransport → Vienna Transit MCP Server  
 **Version**: 2.0 (Dual-Standard Architecture)  
 **Date**: August 10, 2025 (Updated: January 15, 2025)  
 **Status**: ✅ **IMPLEMENTED - Production Ready**
@@ -8,16 +8,23 @@
 ## Executive Summary
 
 ### Vision Statement
-Transform MyWienerLinien into a **dual-standard application** combining web visualization with AI-accessible transit information - providing both human-friendly web interfaces and natural language transit queries through Claude and other AI assistants.
+
+Transform PublicTransport into a **dual-standard application** combining web
+visualization with AI-accessible transit information - providing both
+human-friendly web interfaces and natural language transit queries through
+Claude and other AI assistants.
 
 ### Implementation Status: ✅ COMPLETE
+
 The Vienna Transit MCP Server has been successfully implemented as a **dual-standard architecture**:
+
 - **FastAPI Web Application**: Interactive real-time transit visualization (existing)
 - **FastMCP MCP Server**: AI assistant integration for Claude Desktop (✅ NEW - Complete)
 
 Both interfaces share the same backend logic, providing a unified experience across web and AI platforms.
 
 ### Key Achievements
+
 - ✅ **4 MCP Tools** fully implemented and tested
 - ✅ **3 Prompts** for AI assistant guidance
 - ✅ **5 Resources** for transit system reference
@@ -28,12 +35,14 @@ Both interfaces share the same backend logic, providing a unified experience acr
 ## Product Definition
 
 ### Core Value Proposition
-```
+
+```text
 "Ask Claude: 'When's the next U-Bahn to Stephansplatz?'
 Get real Wiener Linien data instantly without opening apps."
 ```
 
 ### Target Users
+
 1. **Vienna Residents** using Claude Desktop for daily transit planning
 2. **AI Developers** building Vienna-specific applications  
 3. **European Transit Enthusiasts** wanting local MCP servers
@@ -44,6 +53,7 @@ Get real Wiener Linien data instantly without opening apps."
 ### MCP Server Architecture
 
 #### Essential Tools (MVP)
+
 ```python
 @mcp.tool()
 def next_departures(station: str, max_results: int = 5) -> List[Departure]:
@@ -72,6 +82,7 @@ def station_search(query: str) -> List[Station]:
 ```
 
 ### Technology Stack (Implemented)
+
 ```python
 # Production dependencies
 fastmcp>=2.13.0          # FastMCP 2.13 SDK (✅ Implemented)
@@ -82,6 +93,7 @@ requests>=2.31.0         # Wiener Linien API client (✅ Shared backend)
 ```
 
 ### Implementation Architecture
+
 - ✅ **Dual-Standard Design**: FastAPI web app + FastMCP server
 - ✅ **Shared Backend**: Common data_loader, database, vehicle_service modules
 - ✅ **FastMCP 2.13**: Full compliance with latest MCP specification
@@ -90,33 +102,41 @@ requests>=2.31.0         # Wiener Linien API client (✅ Shared backend)
 ## Implementation Roadmap
 
 ### Phase 1: MCP Core (2-3 weeks)
+
 **Deliverables**:
+
 - Convert existing Flask app to FastMCP server
 - Implement 4 essential MCP tools
 - SQLite-based GTFS integration
 - Robust Wiener Linien API client with caching
 
 **Success Criteria**:
+
 - MCP server responds to all 4 tools
 - Station search handles common Vienna names
 - Real-time departures work for major stations
 - <2 second response times
 
 ### Phase 2: AI Experience (1-2 weeks)
+
 **Deliverables**:
+
 - Smart station name matching (fuzzy search, aliases)
 - German/English language support
 - Context-aware suggestions
 - Claude Desktop optimization
 
 **Success Criteria**:
+
 - Handles "Stephansdom" → "Stephansplatz" mapping
 - Works with partial names like "Schwedenpl"
 - Understands "Ring tram" and "airport connection"
 - Natural conversation flow in Claude
 
 ### ✅ Phase 3: Testing & Quality (COMPLETE)
+
 **Deliverables**: ✅ All Complete
+
 - ✅ Comprehensive test suite (14 test files, 26+ test cases)
 - ✅ Unit tests for all tools, models, utilities
 - ✅ Integration tests for server workflows
@@ -125,19 +145,23 @@ requests>=2.31.0         # Wiener Linien API client (✅ Shared backend)
 - ✅ CI/CD pipeline (GitHub Actions)
 
 **Success Criteria**: ✅ All Met
+
 - ✅ All tests passing
 - ✅ Zero linting warnings
 - ✅ Type checking configured
 - ✅ Automated quality checks
 
 ### ⏳ Phase 4: Advanced Features (Future)
+
 **Deliverables**:
+
 - Full GTFS routing for journey planning (currently placeholder)
 - Accessibility information
 - Enhanced caching and performance
 - Multi-modal journey planning
 
 **Success Criteria**:
+
 - Complex route planning with transfers
 - Barrier-free route options
 - Sub-second response times
@@ -145,6 +169,7 @@ requests>=2.31.0         # Wiener Linien API client (✅ Shared backend)
 ## Distribution Strategy
 
 ### Installation Method
+
 ```bash
 # PyPI package for easy distribution
 pip install vienna-transit-mcp
@@ -154,6 +179,7 @@ uvx vienna-transit-mcp
 ```
 
 ### Claude Desktop Configuration
+
 ```json
 {
   "mcpServers": {
@@ -166,6 +192,7 @@ uvx vienna-transit-mcp
 ```
 
 ### Documentation Requirements (✅ Complete)
+
 - ✅ **Quick Start Guide**: MCP server README with setup instructions
 - ✅ **Tool Reference**: Complete API documentation with Google-style docstrings
 - ✅ **Vienna Context Guide**: Prompts and resources for AI assistant guidance
@@ -176,12 +203,14 @@ uvx vienna-transit-mcp
 ## Success Metrics
 
 ### Technical KPIs
+
 - **Response Time**: <2 seconds for 95% of tool calls
 - **API Reliability**: >98% successful Wiener Linien API calls
 - **Tool Accuracy**: >95% correct station matching
 - **Uptime**: >99.5% availability
 
 ### User Experience KPIs
+
 - **Claude Integration**: Seamless operation in Claude Desktop
 - **Natural Language**: Handles common Vienna transit phrases
 - **Coverage**: Supports all U-Bahn, major tram/bus lines
@@ -190,11 +219,13 @@ uvx vienna-transit-mcp
 ## Competitive Analysis
 
 ### VS. Existing Transit Apps
+
 - **AI-First Interface**: Natural language vs. tap-heavy UIs
 - **Workflow Integration**: Part of broader AI assistance, not standalone
 - **Zero Learning Curve**: Uses existing Claude conversation skills
 
 ### VS. International MCP Servers
+
 - **Vienna Expertise**: Local knowledge, German language support
 - **Real-Time Focus**: Live data vs. static schedules only
 - **European Privacy**: GDPR-compliant, local data processing
@@ -202,11 +233,13 @@ uvx vienna-transit-mcp
 ## Risk Mitigation
 
 ### Technical Risks
+
 - **API Changes**: Monitor Wiener Linien API, implement fallbacks
 - **Rate Limiting**: Respect fair use, implement smart caching
 - **Data Quality**: Validate responses, handle edge cases gracefully
 
 ### Market Risks
+
 - **MCP Adoption**: Protocol is growing rapidly, low risk
 - **Competition**: First-mover advantage, high Vienna specialization barrier
 - **Maintenance**: Simple architecture reduces long-term costs
@@ -216,6 +249,7 @@ uvx vienna-transit-mcp
 **STATUS**: ✅ **PRODUCTION READY - All Core Features Complete**
 
 **What Was Delivered**:
+
 1. ✅ **Dual-Standard Architecture**: FastAPI web app + FastMCP server running in parallel
 2. ✅ **4 MCP Tools**: All essential tools implemented and tested
 3. ✅ **3 Prompts**: Comprehensive AI assistant guidance
@@ -225,6 +259,7 @@ uvx vienna-transit-mcp
 7. ✅ **Documentation**: Complete docs, README, status reports
 
 **Why This Implementation Succeeds**:
+
 1. ✅ **Leveraged Existing Work**: Reused Vienna API expertise and data processing
 2. ✅ **Dual-Standard Design**: Maintained web app while adding MCP server
 3. ✅ **FastMCP 2.13**: Latest MCP specification compliance
@@ -232,6 +267,7 @@ uvx vienna-transit-mcp
 5. ✅ **Production Ready**: Comprehensive testing and quality assurance
 
 **Current Capabilities**:
+
 - ✅ Real-time departure information for any Vienna station
 - ✅ Station search with fuzzy matching (German/English)
 - ✅ Service status and disruption monitoring
@@ -239,12 +275,15 @@ uvx vienna-transit-mcp
 - ✅ AI assistant integration via Claude Desktop
 
 **Next Steps** (Future Enhancements):
+
 1. Implement full GTFS routing for journey planning
 2. Add accessibility information
 3. Enhanced caching and performance optimization
 4. Multi-modal journey planning with transfers
 
-This implementation positions the project at the forefront of the European MCP ecosystem while providing genuinely useful infrastructure for Vienna's AI-assisted residents.
+This implementation positions the project at the forefront of the European MCP
+ecosystem while providing genuinely useful infrastructure for Vienna's
+AI-assisted residents.
 
 ---
 
