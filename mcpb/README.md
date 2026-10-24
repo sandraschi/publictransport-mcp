@@ -1,20 +1,20 @@
-# Vienna Transit MCP - MCPB Package
+# publictransport-mcp - MCPB Package
 
-FastMCP 2.13 compliant MCP server package for Vienna public transport information.
+FastMCP 3.4 compliant MCP server package for Vienna public transport information.
 
 ## Package Information
 
 - **Name**: publictransport-mcp
 - **Version**: 1.0.0
 - **Platforms**: Windows, macOS, Linux
-- **Python**: >=3.9
+- **Python**: >=3.10
 
 ## Features
 
 - ✅ 4 core tools for Vienna transit queries
 - ✅ 3 prompts for AI assistant guidance
 - ✅ 5 resources for transit system reference
-- ✅ FastMCP 2.13 compliant
+- ✅ FastMCP 3.4 compliant
 - ✅ Real-time departure information
 - ✅ Station search with fuzzy matching
 - ✅ Journey planning
@@ -156,7 +156,7 @@ Claude: [Uses line_status tool]
 
 ### Common Issues
 
-1. **Server not starting**: Check Python version (>=3.9) and dependencies
+1. **Server not starting**: Check Python version (>=3.10) and dependencies
 2. **No data returned**: Verify internet connection and Wiener Linien API availability
 3. **Import errors**: Ensure all dependencies are installed
 
