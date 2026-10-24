@@ -7,7 +7,7 @@ type LogEntry = {
 	level: string;
 	kind: string;
 	detail: string;
-	meta: Record<string, any>;
+	meta: Record<string, unknown>;
 };
 
 const LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"];
@@ -86,11 +86,22 @@ export default function Logging() {
 		return () => clearInterval(iv);
 	}, [tail, fetchLogs]);
 
+	// Tail-follow: scroll when new entries arrive while pinned to bottom.
+	// A ref (not the entries array) tracks the count so the effect has
+	// no stale-closure dependency on the array identity.
+	const prevCountRef = useRef(entries.length);
+
 	useEffect(() => {
-		if (tail && !userScrolled && endRef.current) {
+		if (
+			tail &&
+			!userScrolled &&
+			endRef.current &&
+			entries.length !== prevCountRef.current
+		) {
+			prevCountRef.current = entries.length;
 			endRef.current.scrollIntoView({ behavior: "smooth" });
 		}
-	}, [entries, tail, userScrolled]);
+	});
 
 	const handleScroll = () => {
 		if (!containerRef.current) return;
@@ -275,16 +286,19 @@ export default function Logging() {
 
 			{showClear && (
 				<>
-					{/* biome-ignore lint/a11y/noStaticElementInteractions: overlay click is a
-				    mouse-only shortcut for the keyboard-reachable Cancel button below. */}
-					<div
-						role="presentation"
-						className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
-						onClick={(e) => {
-							if (e.target === e.currentTarget) setShowClear(false);
+					{/* Backdrop button (closes on click / Enter / Space) + separate
+					    dialog box: no interactive nesting, keyboard reachable. */}
+					<button
+						type="button"
+						aria-label="Close dialog"
+						className="fixed inset-0 bg-black/60 z-40 cursor-default"
+						onClick={() => setShowClear(false)}
+						onKeyDown={(e) => {
+							if (e.key === "Escape") setShowClear(false);
 						}}
-					>
-						<div className="bg-slate-900 border border-slate-700 rounded-xl p-6 max-w-sm">
+					/>
+					<div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+						<div className="bg-slate-900 border border-slate-700 rounded-xl p-6 max-w-sm pointer-events-auto">
 							<h3 className="text-lg font-bold text-slate-200 mb-2">
 								Clear all logs?
 							</h3>

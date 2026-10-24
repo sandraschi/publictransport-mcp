@@ -46,7 +46,8 @@ export default function SettingsPage() {
 		setProviderId(id);
 		const active = providers.find((p) => p.id === id);
 		setModels(active?.models ?? []);
-		if ((active?.models ?? []).length > 0) setModel(active!.models[0]);
+		const first = active?.models?.[0];
+		if (first) setModel(first);
 	}
 
 	async function testProvider() {

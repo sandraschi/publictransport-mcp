@@ -79,11 +79,11 @@ export default function FloatingChat() {
 				}
 			})
 			.catch(() => {});
-	}, []);
+	}, [model]);
 
 	useEffect(() => {
 		if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-	}, [chat, open]);
+	}, [open]);
 
 	useEffect(() => {
 		fetch(`${API_BASE}/api/skills`)
@@ -231,9 +231,9 @@ export default function FloatingChat() {
 								</div>
 							</div>
 						)}
-						{chat.map((msg, i) => (
+						{chat.map((msg) => (
 							<div
-								key={i}
+								key={`${msg.role}-${msg.content.length}-${msg.content.slice(0, 24)}`}
 								className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
 							>
 								<div

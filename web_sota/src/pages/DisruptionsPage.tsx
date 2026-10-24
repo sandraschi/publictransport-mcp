@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { type Alert, api } from "../common/api";
 
 const SEV_STYLES: Record<string, string> = {
@@ -35,7 +35,7 @@ export default function DisruptionsPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [updated, setUpdated] = useState<Date | null>(null);
 
-	async function load() {
+	const load = useCallback(async () => {
 		setLoading(true);
 		setError(null);
 		try {
@@ -47,13 +47,13 @@ export default function DisruptionsPage() {
 		} finally {
 			setLoading(false);
 		}
-	}
+	}, []);
 
 	useEffect(() => {
 		load();
 		const id = setInterval(load, 5 * 60_000);
 		return () => clearInterval(id);
-	}, []);
+	}, [load]);
 
 	return (
 		<div className="max-w-2xl mx-auto space-y-4" data-testid="disruptions-page">

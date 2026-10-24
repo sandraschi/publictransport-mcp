@@ -292,9 +292,9 @@ export default function ChatPage() {
 			)}
 
 			<div className="space-y-3" data-testid="chat-messages">
-				{chat.map((m, i) => (
+				{chat.map((m) => (
 					<div
-						key={i}
+						key={`${m.role}-${m.content.length}-${m.content.slice(0, 24)}`}
 						className={`rounded-xl border px-4 py-3 text-sm whitespace-pre-line ${
 							m.role === "user"
 								? "border-blue-800 bg-blue-950/40 text-blue-100"
