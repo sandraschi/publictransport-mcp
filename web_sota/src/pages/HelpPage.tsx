@@ -3,11 +3,19 @@ import { Link } from "react-router-dom";
 const SECTIONS = [
 	{
 		title: "Getting started",
-		body: "Database: docker compose up -d db (postgres on 5433, named volume). Map: just map (native, port 10722). Dashboard backend: just serve (port 11170). Open this dashboard and check the backend dot in the header. Full walkthrough: docs/ONBOARDING.md in the repo.",
+		body: "Backend: just serve (FastAPI on 127.0.0.1:11170). Dashboard: this app (Vite on :10896). Native map: /map route above, or just map (standalone Leaflet app on :10722). SQLite only - no Docker database to start. Open this dashboard and check the backend dot in the sidebar. Full walkthrough: docs/ONBOARDING.md in the repo.",
 	},
 	{
 		title: "Where does the data come from?",
 		body: "Departures, disruptions, and news come live from the Wiener Linien open data API (no key needed). The stop table and line catalog are reference snapshots from the official GTFS feed. Wiener Linien publishes no live vehicle GPS - map markers are schedule-interpolated.",
+	},
+	{
+		title: "GTFS data and gtfs-mcp",
+		body: "All schedule data enters through gtfs-mcp, the sibling fleet repo: it downloads official GTFS feeds, holds per-feed SQLite snapshots, and exports per-city tables into scripts/gtfs_data/cities/<id>/ here. The header city dropdown and the /api/cities endpoint report data_loaded per city from those exports - a city without an export shows 'no data yet' instead of an empty map. Refreshing data or adding a city (Munich, Berlin, ...) happens in gtfs-mcp, never by hand-editing files here.",
+	},
+	{
+		title: "Multi-city",
+		body: "Vienna is the only city with live data (OGD realtime). Every other city serves its static GTFS timetable once gtfs-mcp has exported it: lines, stops and the map work, live departure boards honestly report 501. Switch cities in the header dropdown.",
 	},
 	{
 		title: "Chat and local LLMs",
@@ -15,11 +23,11 @@ const SECTIONS = [
 	},
 	{
 		title: "MCP server (Claude Desktop)",
-		body: "The same transit data is exposed as 15 MCP tools over stdio (see Tools). Configure Claude Desktop with python -m frontend.mcp_server.server and PYTHONPATH pointing at the repo. Docs: docs/TOOLS.md.",
+		body: "The same transit data is exposed as 20 MCP tools over stdio (see Tools). Configure Claude Desktop with python -m frontend.mcp_server.server run from the repo root. Docs: docs/TOOLS.md.",
 	},
 	{
 		title: "Troubleshooting",
-		body: "Backend dot red? The API on 127.0.0.1:11170 is not running - start it with just serve. Empty departures? The OGD API may be rate-limiting; wait 60 seconds.",
+		body: "Backend dot red? The API on 127.0.0.1:11170 is not running - start it with just serve. Empty departures? The OGD API may be rate-limiting; wait 60 seconds. City shows 'no data yet'? Its gtfs-mcp export is missing - load the feed in gtfs-mcp first.",
 	},
 ];
 

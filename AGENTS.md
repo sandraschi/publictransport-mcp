@@ -2,7 +2,7 @@
 
 ## Overview
 
-Vienna Transit MCP Server - FastMCP 3.1.0x compliant MCP server for Vienna public transport information
+publictransport-mcp server - FastMCP 3.4 compliant MCP server for Vienna public transport information
 
 ## Entry Points
 
