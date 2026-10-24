@@ -15,6 +15,7 @@ let socket;
 let selectedStopHighlight = null; // Highlight circle for selected stop
 let currentCity = 'vienna'; // Default city
 let cityConfig = null; // Current city configuration
+let cityList = []; // All cities from /api/cities (with data_loaded flags)
 
 // Line selection state
 let lineData = [];
@@ -107,6 +108,38 @@ function getCityFromURL() {
     return localStorage.getItem('selectedCity') || 'vienna';
 }
 
+// Look up a city in the cached /api/cities list (populated by initializeCitySelector)
+function cityByKey(key) {
+    return cityList.find((c) => (c.key || c.code) === key) || null;
+}
+
+function cityHasData(key) {
+    const city = cityByKey(key);
+    return !!city && city.data_loaded === true;
+}
+
+function cityDisplayName(key) {
+    const city = cityByKey(key);
+    return (city && city.name) || key;
+}
+
+// Persistent banner for the no-GTFS state (unlike showError, this stays until
+// the user switches to a city that actually has data)
+function showCityWarning(cityName) {
+    const banner = document.getElementById('city-warning');
+    if (banner) {
+        banner.textContent = `No GTFS data for ${cityName} yet - load it with gtfs-mcp, then switch back.`;
+        banner.style.display = 'block';
+    }
+}
+
+function hideCityWarning() {
+    const banner = document.getElementById('city-warning');
+    if (banner) {
+        banner.style.display = 'none';
+    }
+}
+
 // Load city configuration
 async function loadCityConfig(cityKey) {
     try {
@@ -133,6 +166,23 @@ async function loadCityConfig(cityKey) {
 async function initializeMap() {
     // Get city from URL or localStorage
     currentCity = getCityFromURL();
+
+    // Fall back when the requested city has no GTFS on disk (deep link or
+    // stale localStorage): never boot into a city that will render empty.
+    if (cityList.length > 0 && !cityHasData(currentCity)) {
+        const requested = cityDisplayName(currentCity);
+        const fallback = cityList.find((c) => c.data_loaded === true);
+        if (fallback) {
+            currentCity = fallback.key || fallback.code;
+            const url = new URL(window.location.href);
+            url.searchParams.set('city', currentCity);
+            window.history.replaceState({ city: currentCity }, '', url);
+            localStorage.setItem('selectedCity', currentCity);
+        }
+        showCityWarning(requested);
+    } else {
+        hideCityWarning();
+    }
 
     // Load city configuration
     cityConfig = await loadCityConfig(currentCity);
@@ -181,6 +231,20 @@ async function initializeMap() {
 
 // Switch to a different city
 async function switchCity(cityKey) {
+    // Refuse to switch into a city with no GTFS on disk: switching would wipe
+    // the live city's markers and render an empty map with no explanation.
+    // (When the city list itself failed to load, cityList is empty and the
+    // guard is skipped - never brick switching on a failed metadata fetch.)
+    if (cityList.length > 0 && !cityHasData(cityKey)) {
+        showCityWarning(cityDisplayName(cityKey));
+        const citySelector = document.getElementById('city-selector');
+        if (citySelector) {
+            citySelector.value = currentCity;
+        }
+        return;
+    }
+    hideCityWarning();
+
     // Update URL without reload
     const url = new URL(window.location.href);
     url.searchParams.set('city', cityKey);
@@ -1640,20 +1704,38 @@ async function initializeCitySelector() {
         }
         const data = await response.json();
         const cities = data.cities || [];
+        cityList = cities;
 
         // Clear existing options
         citySelector.innerHTML = '';
 
-        // Add cities to dropdown
-        cities.forEach(city => {
+        // Loaded cities first (selectable), then pending ones as disabled
+        // options so the dropdown never pretends an empty city will work.
+        const loaded = cities.filter((city) => city.data_loaded === true);
+        const pending = cities.filter((city) => city.data_loaded !== true);
+
+        const appendOption = (city, disabled) => {
             const option = document.createElement('option');
             option.value = city.key;
-            option.textContent = city.name;
+            option.textContent = disabled ? `${city.name} - no data yet` : city.name;
+            option.disabled = disabled;
+            option.title = disabled
+                ? `No GTFS data for ${city.name} yet - load it with gtfs-mcp`
+                : city.name;
             if (city.key === currentCity) {
                 option.selected = true;
             }
             citySelector.appendChild(option);
-        });
+        };
+
+        loaded.forEach((city) => appendOption(city, false));
+        pending.forEach((city) => appendOption(city, true));
+
+        // Edge case: nothing on disk at all (fresh install) - the map boots
+        // on the default center with the warning banner explaining why.
+        if (loaded.length === 0 && cities.length > 0) {
+            showCityWarning(cities[0].name);
+        }
 
         // Add change event listener
         citySelector.addEventListener('change', async (e) => {
