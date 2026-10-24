@@ -33,7 +33,7 @@ Symptom: `uv sync` resolves but `uvicorn` or `fastmcp` import fails, or
 Facts: `pyproject.toml` pins `fastapi>=0.110.2`, `SQLAlchemy==2.0.23`,
 `fastmcp>=3.4.4,<4`, `pydantic>=2.5.0`. FastMCP 3.x middleware APIs moved;
 this repo deliberately leaves middleware registration commented out in
-`src/publictransport_mcp/server.py` until the 2.13+ API is confirmed.
+`src/publictransport_mcp/server.py` until the 3.4+ API is confirmed.
 
 Fix:
 

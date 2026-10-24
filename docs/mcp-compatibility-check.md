@@ -1,9 +1,10 @@
-# FastMCP 2.13 Compatibility Check
+# FastMCP 3.4 Compatibility Check
 
 ## Dependency Compatibility
 
 ### Current Dependencies
-```
+
+```text
 fastapi==0.110.2          ✅ Compatible (FastMCP can coexist)
 uvicorn[standard]==0.29.0 ✅ Compatible
 SQLAlchemy==2.0.23        ✅ Compatible
@@ -12,19 +13,22 @@ pydantic>=2.5.0           ⚠️  Need to verify version
 ```
 
 ### Required Additions
-```
-fastmcp>=2.13.0           ❌ Not yet added
+
+```text
+fastmcp>=3.4.4,<4           ❌ Not yet added
 pydantic>=2.5.0           ⚠️  May need upgrade (check current)
 ```
 
 ### Potential Conflicts
+
 - **None identified** - FastMCP is designed to work alongside FastAPI
 - FastMCP uses stdio/HTTP transport, FastAPI uses HTTP - no conflict
 - Can run both servers in parallel if needed
 
-## FastMCP 2.13 Feature Checklist
+## FastMCP 3.4 Feature Checklist
 
 ### ✅ Supported Features (Ready to Use)
+
 - [x] Tool decorators with type hints
 - [x] Pydantic model validation
 - [x] Async/await support
@@ -32,6 +36,7 @@ pydantic>=2.5.0           ⚠️  May need upgrade (check current)
 - [x] Resource management
 
 ### ⚠️ Features Requiring Implementation
+
 - [ ] Middleware (logging, error handling)
 - [ ] Output schemas (Pydantic models)
 - [ ] Elicitation support (for ambiguous inputs)
@@ -39,6 +44,7 @@ pydantic>=2.5.0           ⚠️  May need upgrade (check current)
 - [ ] Authentication (if needed)
 
 ### ❌ Not Applicable (For Our Use Case)
+
 - [ ] OAuth flows (not needed for local Claude Desktop)
 - [ ] StreamableHTTP transport (stdio sufficient for Claude Desktop)
 - [ ] Multi-tenant support (single user)
@@ -46,7 +52,9 @@ pydantic>=2.5.0           ⚠️  May need upgrade (check current)
 ## Code Compatibility
 
 ### Existing Code Reuse
+
 ✅ **Can Reuse:**
+
 - Database models (`frontend/database.py`)
 - API clients (`frontend/vehicle_service.py`)
 - GTFS data loading (`frontend/data_loader.py`)
@@ -54,11 +62,13 @@ pydantic>=2.5.0           ⚠️  May need upgrade (check current)
 - Route planning algorithms
 
 ⚠️ **Needs Adaptation:**
+
 - FastAPI endpoints → MCP tools (different decorators)
 - HTTP responses → MCP tool responses (different format)
 - WebSocket → Not needed for MCP (uses stdio)
 
 ❌ **Cannot Reuse:**
+
 - Web UI templates (not needed for MCP)
 - Frontend JavaScript (not needed for MCP)
 - WebSocket real-time updates (MCP uses request/response)
@@ -66,7 +76,8 @@ pydantic>=2.5.0           ⚠️  May need upgrade (check current)
 ## Architecture Compatibility
 
 ### Current Architecture
-```
+
+```text
 FastAPI App (HTTP/WebSocket)
 ├── Web UI (HTML/JS)
 ├── REST API endpoints
@@ -75,7 +86,8 @@ FastAPI App (HTTP/WebSocket)
 ```
 
 ### Proposed MCP Architecture
-```
+
+```text
 FastMCP Server (stdio/HTTP)
 ├── MCP Tools (4 tools)
 ├── Middleware (logging, errors)
@@ -84,7 +96,9 @@ FastMCP Server (stdio/HTTP)
 ```
 
 ### Compatibility Strategy
+
 **Parallel Implementation:**
+
 - Keep FastAPI app running (for web UI)
 - Add MCP server as separate module
 - Share database and API client code
@@ -93,12 +107,14 @@ FastMCP Server (stdio/HTTP)
 ## Testing Compatibility
 
 ### Required Test Infrastructure
+
 - [ ] MCP Inspector (for protocol testing)
 - [ ] Claude Desktop (for integration testing)
 - [ ] Contract tests (for specification compliance)
 - [ ] Unit tests (for individual tools)
 
 ### Existing Test Infrastructure
+
 ✅ `tests/` directory exists
 ✅ `conftest.py` with pytest setup
 ✅ Can extend existing test patterns
@@ -106,18 +122,21 @@ FastMCP Server (stdio/HTTP)
 ## Migration Path
 
 ### Phase 1: Add MCP Server (Non-Breaking)
+
 - Add `mcp_server/` directory
 - Add FastMCP dependency
 - Implement tools alongside FastAPI
 - **No changes to existing code**
 
 ### Phase 2: Integration
+
 - Share database access
 - Share API clients
 - Test both servers together
 - **Still non-breaking**
 
 ### Phase 3: Optional Migration
+
 - Consider deprecating web UI (if desired)
 - Focus on MCP tools
 - **Breaking change only if removing web UI**
@@ -142,15 +161,12 @@ FastMCP Server (stdio/HTTP)
 
 ## Conclusion
 
-**Compatibility Status: ✅ READY**
+### Compatibility Status: READY ✅
 
 - No blocking compatibility issues
 - Can implement alongside existing FastAPI app
 - High code reuse potential
 - Low migration risk
-- FastMCP 2.13 features fully supported
+- FastMCP 3.4 features fully supported
 
 **Recommendation:** Proceed with parallel implementation approach.
-
-
-

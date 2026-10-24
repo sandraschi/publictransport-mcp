@@ -1,8 +1,9 @@
-# MCP Server Implementation Plan - FastMCP 2.13 Conformance
+# MCP Server Implementation Plan - FastMCP 3.4 Conformance
 
 ## Current Status
 
 ### Existing Codebase
+
 - ✅ FastAPI web application with Wiener Linien API integration
 - ✅ GTFS data loading and processing
 - ✅ Database layer (PostgreSQL) with routes, stops, vehicles
@@ -11,10 +12,11 @@
 - ❌ **No FastMCP dependency**
 
 ### Documentation
-- ✅ PRD exists (`docs/ENHANCED-PRD-2025-08-10.md`) targeting FastMCP 2.10.0
-- ⚠️ Needs update for FastMCP 2.13 conformance
 
-## FastMCP 2.13 Compatibility Requirements
+- ✅ PRD exists (`docs/ENHANCED-PRD-2025-08-10.md`) targeting FastMCP 2.10.0
+- ⚠️ Needs update for FastMCP 3.4 conformance
+
+## FastMCP 3.4 Compatibility Requirements
 
 ### Core Requirements
 
@@ -48,20 +50,23 @@
 ### Phase 1: Foundation Setup (Week 1)
 
 **Dependencies:**
+
 ```python
-fastmcp>=2.13.0          # Latest FastMCP with 2.13 features
+fastmcp>=3.4.4,<4          # Latest FastMCP with 3.4 features
 pydantic>=2.5.0          # Data validation (required by FastMCP)
 requests>=2.31.0         # Wiener Linien API client
 ```
 
 **Tasks:**
+
 1. Create new `mcp_server/` directory structure
-2. Add FastMCP 2.13 to requirements
+2. Add FastMCP 3.4 to requirements
 3. Create minimal MCP server with one tool (proof of concept)
 4. Test with Claude Desktop
 
 **Structure:**
-```
+
+```text
 mcp_server/
 ├── __init__.py
 ├── server.py              # Main FastMCP server
@@ -85,6 +90,7 @@ mcp_server/
 ### Phase 2: Core Tools Implementation (Week 2-3)
 
 **Tool 1: `next_departures`**
+
 ```python
 @mcp.tool()
 async def next_departures(
@@ -103,6 +109,7 @@ async def next_departures(
 ```
 
 **Tool 2: `station_search`**
+
 ```python
 @mcp.tool()
 async def station_search(
@@ -121,6 +128,7 @@ async def station_search(
 ```
 
 **Tool 3: `line_status`**
+
 ```python
 @mcp.tool()
 async def line_status(
@@ -137,6 +145,7 @@ async def line_status(
 ```
 
 **Tool 4: `journey_planner`**
+
 ```python
 @mcp.tool()
 async def journey_planner(
@@ -156,9 +165,10 @@ async def journey_planner(
     """
 ```
 
-### Phase 3: FastMCP 2.13 Features (Week 3-4)
+### Phase 3: FastMCP 3.4 Features (Week 3-4)
 
 **Middleware Implementation:**
+
 ```python
 from fastmcp import FastMCP
 from fastmcp.middleware import Middleware
@@ -186,6 +196,7 @@ async def error_handler_middleware(request, call_next):
 ```
 
 **Output Schemas:**
+
 ```python
 from pydantic import BaseModel, Field
 
@@ -212,6 +223,7 @@ class Departure(BaseModel):
 ```
 
 **Elicitation Support:**
+
 ```python
 @mcp.tool()
 async def next_departures(
@@ -231,18 +243,21 @@ async def next_departures(
 ### Phase 4: Testing & Validation (Week 4-5)
 
 **Contract Testing:**
+
 - Validate all tools against MCP specification
 - Test tool registration
 - Verify output schemas
 - Test error handling
 
 **Integration Testing:**
+
 - Test with Claude Desktop
 - Test with MCP Inspector
 - Verify middleware execution
 - Test elicitation flows
 
 **Performance Testing:**
+
 - Response time targets: <2 seconds for 95% of calls
 - API reliability: >98% success rate
 - Tool accuracy: >95% station matching
@@ -250,12 +265,14 @@ async def next_departures(
 ## Migration Strategy
 
 ### Option 1: Parallel Implementation (Recommended)
+
 - Keep existing FastAPI web app running
 - Build MCP server as separate module
 - Share data access layer (database, API clients)
 - Gradual migration of functionality
 
 ### Option 2: Full Conversion
+
 - Convert FastAPI app to FastMCP server
 - Remove web UI components
 - Focus entirely on MCP tools
@@ -263,7 +280,7 @@ async def next_departures(
 
 ## Compatibility Checklist
 
-- [ ] FastMCP 2.13.0+ installed
+- [ ] FastMCP 3.4.0+ installed
 - [ ] MCP 2025-06-18 specification compliance
 - [ ] Middleware implemented for logging/error handling
 - [ ] Output schemas defined for all tools
@@ -276,9 +293,9 @@ async def next_departures(
 
 ## Next Steps
 
-1. **Immediate**: Update PRD to reference FastMCP 2.13
+1. **Immediate**: Update PRD to reference FastMCP 3.4
 2. **Week 1**: Set up MCP server structure, add FastMCP dependency
-3. **Week 2**: Implement first tool (`next_departures`) with full 2.13 features
+3. **Week 2**: Implement first tool (`next_departures`) with full 3.4 features
 4. **Week 3**: Add remaining tools with middleware and schemas
 5. **Week 4**: Testing and validation
 6. **Week 5**: Documentation and deployment
@@ -290,6 +307,3 @@ async def next_departures(
 - [MCP Specification](https://modelcontextprotocol.io/)
 - [FastMCP Middleware Guide](https://fastmcp.wiki/en/servers/middleware)
 - [FastMCP Authentication](https://fastmcp.wiki/en/servers/auth/authentication)
-
-
-

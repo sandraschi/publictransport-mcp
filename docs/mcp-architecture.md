@@ -152,7 +152,7 @@ Could use a process manager to run both, but they're independent:
 1. **Flexibility**: Different transports for different clients
 2. **Maintainability**: Clear separation between MCP and web code
 3. **Scalability**: Can scale each server independently
-4. **Compatibility**: FastMCP 2.13 stdio + FastAPI HTTP don't conflict
+4. **Compatibility**: FastMCP 3.4 stdio + FastAPI HTTP don't conflict
 5. **Future-proof**: Easy to add more transports (e.g., gRPC) later
 
 ## Alternative Approaches Considered
@@ -192,4 +192,4 @@ Could use a process manager to run both, but they're independent:
 - FastAPI server (`frontend/app.py`) - Ready for HTTP transport  
 - Shared backend imports working correctly
 - All tools registered and middleware configured
-- Dependencies installed (fastmcp>=2.13.0, pydantic>=2.5.0)
+- Dependencies installed (fastmcp>=3.4.4,<4, pydantic>=2.5.0)

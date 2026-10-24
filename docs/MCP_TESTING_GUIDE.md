@@ -5,7 +5,7 @@
 
 ## Overview
 
-The Vienna Transit MCP Server now features:
+The publictransport-mcp server now features:
 
 - ✅ Real GTFS-based journey planning (not placeholder!)
 - ✅ Natural language support with 5 comprehensive prompts
@@ -320,7 +320,7 @@ Claude:
 **Error**: `ModuleNotFoundError: No module named 'fastmcp'`
 
 ```powershell
-pip install fastmcp>=2.13.0
+pip install "fastmcp>=3.4.4,<4"
 ```
 
 **Error**: `Database file missing` (tools report DB-unreachable)
@@ -345,7 +345,7 @@ pip install fastmcp>=2.13.0
 
 1. Restart Claude Desktop
 2. Check server.py registers prompts correctly
-3. Verify FastMCP version >= 2.13.0
+3. Verify FastMCP version >= 3.4
 
 ---
 
