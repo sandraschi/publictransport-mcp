@@ -1,8 +1,12 @@
 // Service Worker for Wiener Linien Live Map PWA
-// Version: 1.0.0
-// Date: 2025-12-03
+// Version: 1.0.1
+// Date: 2026-10-24
+//
+// Bump CACHE_VERSION on every static-asset change (map.js, css, templates):
+// the fetch handler is cache-first, so without a bump clients keep serving
+// the previous JS forever and bug fixes never reach the browser.
 
-const CACHE_VERSION = 'wl-live-v1';
+const CACHE_VERSION = 'wl-live-v2';
 const CACHE_STATIC = `${CACHE_VERSION}-static`;
 const CACHE_DYNAMIC = `${CACHE_VERSION}-dynamic`;
 const CACHE_OFFLINE = `${CACHE_VERSION}-offline`;
@@ -37,7 +41,7 @@ const NETWORK_ONLY_PATTERNS = [
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
     console.log('[SW] Installing Service Worker v' + CACHE_VERSION);
-    
+
     event.waitUntil(
         caches.open(CACHE_STATIC)
             .then((cache) => {
@@ -48,7 +52,7 @@ self.addEventListener('install', (event) => {
                 console.error('[SW] Failed to cache static assets:', err);
             })
     );
-    
+
     // Force activation immediately
     self.skipWaiting();
 });
@@ -56,7 +60,7 @@ self.addEventListener('install', (event) => {
 // Activate event - clean old caches
 self.addEventListener('activate', (event) => {
     console.log('[SW] Activating Service Worker v' + CACHE_VERSION);
-    
+
     event.waitUntil(
         caches.keys()
             .then((cacheNames) => {
@@ -70,7 +74,7 @@ self.addEventListener('activate', (event) => {
                 );
             })
     );
-    
+
     // Take control immediately
     return self.clients.claim();
 });
@@ -79,30 +83,30 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     const { request } = event;
     const url = new URL(request.url);
-    
+
     // Skip non-GET requests
     if (request.method !== 'GET') {
         return;
     }
-    
+
     // Network only for specific patterns
     if (NETWORK_ONLY_PATTERNS.some(pattern => pattern.test(url.pathname))) {
         event.respondWith(fetch(request));
         return;
     }
-    
+
     // Static assets - cache first
     if (STATIC_ASSETS.some(asset => url.pathname === asset || url.pathname.startsWith('/static/'))) {
         event.respondWith(cacheFirst(request, CACHE_STATIC));
         return;
     }
-    
+
     // API responses - network first with cache fallback (short TTL)
     if (API_CACHE_PATTERNS.some(pattern => pattern.test(url.pathname))) {
         event.respondWith(networkFirstWithTimeout(request, CACHE_DYNAMIC, 3000));
         return;
     }
-    
+
     // Default - network first with cache fallback
     event.respondWith(networkFirst(request, CACHE_DYNAMIC));
 });
@@ -112,19 +116,19 @@ async function cacheFirst(request, cacheName) {
     try {
         const cache = await caches.open(cacheName);
         const cachedResponse = await cache.match(request);
-        
+
         if (cachedResponse) {
             console.log('[SW] Cache hit:', request.url);
             return cachedResponse;
         }
-        
+
         console.log('[SW] Cache miss, fetching:', request.url);
         const networkResponse = await fetch(request);
-        
+
         if (networkResponse.ok) {
             cache.put(request, networkResponse.clone());
         }
-        
+
         return networkResponse;
     } catch (error) {
         console.error('[SW] Cache first failed:', error);
@@ -136,22 +140,22 @@ async function cacheFirst(request, cacheName) {
 async function networkFirst(request, cacheName) {
     try {
         const networkResponse = await fetch(request);
-        
+
         if (networkResponse.ok) {
             const cache = await caches.open(cacheName);
             cache.put(request, networkResponse.clone());
         }
-        
+
         return networkResponse;
     } catch (error) {
         console.log('[SW] Network failed, trying cache:', request.url);
         const cache = await caches.open(cacheName);
         const cachedResponse = await cache.match(request);
-        
+
         if (cachedResponse) {
             return cachedResponse;
         }
-        
+
         return offlineFallback(request);
     }
 }
@@ -163,24 +167,24 @@ async function networkFirstWithTimeout(request, cacheName, timeout = 3000) {
         const timeoutPromise = new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Network timeout')), timeout)
         );
-        
+
         const networkResponse = await Promise.race([networkPromise, timeoutPromise]);
-        
+
         if (networkResponse.ok) {
             const cache = await caches.open(cacheName);
             cache.put(request, networkResponse.clone());
         }
-        
+
         return networkResponse;
     } catch (error) {
         console.log('[SW] Network timeout/failed, trying cache:', request.url);
         const cache = await caches.open(cacheName);
         const cachedResponse = await cache.match(request);
-        
+
         if (cachedResponse) {
             return cachedResponse;
         }
-        
+
         return offlineFallback(request);
     }
 }
@@ -188,7 +192,7 @@ async function networkFirstWithTimeout(request, cacheName, timeout = 3000) {
 // Offline fallback
 async function offlineFallback(request) {
     const url = new URL(request.url);
-    
+
     // Return offline page for HTML requests
     if (request.headers.get('accept')?.includes('text/html')) {
         const cache = await caches.open(CACHE_OFFLINE);
@@ -197,7 +201,7 @@ async function offlineFallback(request) {
             return offlinePage;
         }
     }
-    
+
     // Return 503 for failed requests
     return new Response(
         JSON.stringify({
@@ -214,7 +218,7 @@ async function offlineFallback(request) {
 // Background sync for offline actions (future enhancement)
 self.addEventListener('sync', (event) => {
     console.log('[SW] Background sync:', event.tag);
-    
+
     if (event.tag === 'sync-favorites') {
         event.waitUntil(syncFavorites());
     }
@@ -228,7 +232,7 @@ async function syncFavorites() {
 // Push notifications (future enhancement)
 self.addEventListener('push', (event) => {
     console.log('[SW] Push notification received');
-    
+
     const data = event.data ? event.data.json() : {};
     const title = data.title || 'Wiener Linien';
     const options = {
@@ -237,7 +241,7 @@ self.addEventListener('push', (event) => {
         badge: '/static/images/badge.png',
         data: data.url || '/'
     };
-    
+
     event.waitUntil(
         self.registration.showNotification(title, options)
     );
@@ -246,9 +250,8 @@ self.addEventListener('push', (event) => {
 // Notification click handler
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
-    
+
     event.waitUntil(
         clients.openWindow(event.notification.data || '/')
     );
 });
-
