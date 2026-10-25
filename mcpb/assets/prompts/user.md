@@ -32,6 +32,7 @@ The full app also ships a Vite dashboard and a FastAPI backend plus an optional 
 ## Core Features
 
 ### Finding Stations
+
 ```
 Search by name: station_search("Karlsplatz")
 Search with context: station_search("Central Station")
@@ -39,6 +40,7 @@ Fuzzy matching: station_search("stephansdom")
 ```
 
 ### Departure Information
+
 ```
 Next departures: next_departures("Westbahnhof", limit=5)
 Specific lines: next_departures("Karlsplatz", lines=["U1", "U2", "U4"])
@@ -48,6 +50,7 @@ Time window: next_departures("Schottentor", minutes=30)
 Note: the canonical parameters are `station` (station name, fuzzy accepted) and `max_results` (1 to 10, default 5). The shorthand above shows intent; the assistant normalizes line filters and time windows before calling the tool.
 
 ### Journey Planning
+
 ```
 Simple route: journey_planner("from: Westbahnhof", "to: Karlsplatz")
 With preferences: journey_planner("from: Airport", "to: City Center", mode="fastest")
@@ -55,6 +58,7 @@ Avoid transfers: journey_planner("from: A", "to: B", max_transfers=0)
 ```
 
 ### Service Status
+
 ```
 Check disruptions: line_status("U1")
 All services: line_status()
@@ -70,6 +74,7 @@ Twelve tools plus routes reference info. Each entry lists what it does, its para
 Parameter: `topic` (optional, default "overview"). Tool-usage topics: overview, departures, stations, journey, timetable, alerts, status, examples. Vienna knowledge topics: vienna, wienerlinien, history. Technical topics: gtfs, data, displays, architecture.
 
 Vienna examples:
+
 - `help()` - first-run orientation and full tool list.
 - `help("departures")` - how live departure boards work.
 - `help("history")` - history of Vienna public transport for school projects or curious tourists.
@@ -83,6 +88,7 @@ Use help whenever you want to learn rather than travel: company background, data
 No required parameters. Returns uptime, version, database connectivity, last GTFS refresh, and live feed reachability.
 
 Vienna examples:
+
 - "Is the system working? The times look wrong." - the assistant calls server_status first.
 - Before a high-stakes answer (airport run, last train home), the assistant verifies freshness.
 - "How fresh is your data?" - answered with the last-updated timestamp from server_status.
@@ -94,6 +100,7 @@ If data is stale, the assistant says so openly and labels subsequent times as sc
 No required parameters. Returns every configured city with city_code, city_name, country, timezone, language, enabled flag, data_loaded flag, and map center.
 
 Vienna examples:
+
 - "Which cities do you support?" - full list with status.
 - A search for a non-Vienna place fails - the assistant checks list_cities to see whether another city context fits.
 - "Compare Vienna with your other cities." - city_transit_stats per city after listing.
@@ -105,6 +112,7 @@ Vienna is the default city. Only cities reported as enabled with loaded data are
 Parameter: `city_code` (lowercase identifier, for example "vienna").
 
 Vienna examples:
+
 - `switch_to_city("vienna")` - return home after exploring another city.
 - "Now show me departures in the other city." - the assistant lists cities, switches, confirms, and re-runs the query.
 - After switching, station names are re-resolved because the same name can exist in two cities.
@@ -116,6 +124,7 @@ The assistant always confirms the switch and states what changed: search, depart
 Parameter: `city_code` (optional, defaults to the active city). Returns total stops, total routes, total scheduled trips, currently active vehicles, and last update timestamp.
 
 Vienna examples:
+
 - "How big is the Vienna network?" - 1,000+ stops, full U-Bahn, tram, bus, S-Bahn, and night coverage with counts.
 - "How many vehicles are running right now?" - active vehicle count with timestamp.
 - "Does the data look complete?" - stop, route, and trip totals plus last_updated.
@@ -127,6 +136,7 @@ Always read the last_updated value when freshness matters.
 Parameter: `query` (station name fragment, German or English, abbreviations accepted).
 
 Vienna examples:
+
 - `station_search("Stephansplatz")` - exact cathedral square interchange (U1, U3).
 - `station_search("Stefans")` or `station_search("stephansdom")` - partial and fuzzy forms that still resolve.
 - `station_search("HBF")` - common abbreviation resolving to Hauptbahnhof (verify before use).
@@ -148,6 +158,7 @@ Results include official names and RBL stop codes. When several candidates match
 Parameters: latitude, longitude, and an optional search radius in meters. A coordinates variant (`nearby_stops_by_coordinates`) is also available.
 
 Vienna examples:
+
 - "What is the closest station to my hotel near Naschmarkt?" - anchor with station_search("Naschmarkt"), then nearby_stops with your coordinates.
 - Standing at Stephansdom with GPS: nearby stops within a few hundred meters, sorted by distance.
 - "Which tram stops are near Belvedere palace?" - nearby_stops around the palace coordinates plus the D and O tram context.
@@ -159,6 +170,7 @@ Always note the radius used. Coordinates outside the active city get a clear mes
 Parameters: `station` (fuzzy name accepted) and `max_results` (1 to 10, default 5). Returns line, destination, scheduled time, countdown minutes, delay minutes when known, platform when published, and vehicle_type (metro, tram, bus, nightbus).
 
 Vienna examples:
+
 - `next_departures("Stephansplatz", max_results=3)` - quick glance at the cathedral interchange.
 - `next_departures("Westbahnhof", max_results=8)` - wide board at a major rail station.
 - `next_departures("Karlsplatz", max_results=10)` then filter to U4 - all U4 departures toward Huetteldorf and Heiligenstadt.
@@ -175,6 +187,7 @@ The assistant always names the matched official station and its RBL code so you 
 Optional filters per implementation. Sources: Wiener Linien trafficInfoList (structured disruption records) plus newsList (editorial service news): construction, closures, detours, event service changes, and notices published as news.
 
 Vienna examples:
+
 - "Is the U1 running normally?" - traffic_alerts plus line_status("U1") in the same turn.
 - "Weekend works on the U4?" - alerts narrate the closure, line_status gives the verdict.
 - "Elevator outage at Karlsplatz?" - checked via status and alerts; outages published as news are relayed with wording and scope.
@@ -188,6 +201,7 @@ No published alert means "no alerts currently published", not a guarantee of per
 Parameter: `line` (optional; for example "U1", "U4", "D", "13A"). No argument summarizes the whole network.
 
 Vienna examples:
+
 - `line_status("U1")` - red line Oberlaa to Leopoldau status.
 - `line_status("U6")` - brown line Floridsdorf to Siebenhirten status.
 - `line_status("D")` - ring tram corridor status.
@@ -201,6 +215,7 @@ Combine with traffic_alerts for the complete picture: narrative plus verdict.
 Parameters: `station` plus optional line and schedule scope per implementation. Answers regular-schedule questions: first and last services, Sunday frequency, night boundaries.
 
 Vienna examples:
+
 - "When is the first U1 from Leopoldau on Sunday?" - scheduled timetable, labeled as scheduled.
 - "How often does tram D run here evenings?" - frequency from the timetable.
 - "Last train from Heiligenstadt tonight?" - last-service lookup.
@@ -214,6 +229,7 @@ Scheduled times are labeled scheduled; live times are labeled live. Never mix th
 Parameters: origin station, destination station, plus preference hints (fastest mode, transfer limits) per implementation. A-star multi-transfer routing over GTFS data across U-Bahn, tram, bus, S-Bahn, and night lines.
 
 Vienna examples:
+
 - Westbahnhof to Stephansplatz: U3 to Stephansplatz direct, or U3 plus one change depending on works.
 - Hauptbahnhof to Flughafen Wien Bahnhof: S-Bahn airport corridor itinerary with live cross-check.
 - Schoenbrunn (resolve via station_search, e.g. Schoenbrunn ULF stop area) to Praterstern: multi-leg with explicit transfer station.
@@ -229,6 +245,7 @@ Both endpoints are resolved with station_search first when ambiguous. Every itin
 Backed by the `routes` tool and static resources (network overview, metro lines, major stations, operating hours, fares). No live data; reference only.
 
 Vienna examples:
+
 - "Where does the U2 go?" - purple line Karlsplatz to Seestadt corridor with termini check.
 - "What does tram D serve?" - Nußdorfer Strasse to Oper corridor highlights.
 - "Which night buses exist?" - N-prefix lines such as N25, N38, N60, N66.
@@ -238,6 +255,7 @@ Vienna examples:
 ## Vienna Transit Lines
 
 ### U-Bahn (Metro)
+
 - **U1**: Red line - Oberlaa ↔ Leopoldau
 - **U2**: Purple line - Karlsplatz ↔ Seestadt
 - **U3**: Orange line - Ottakring ↔ Simmering
@@ -247,6 +265,7 @@ Vienna examples:
 There is no U5 in regular service. If you ask for U5, the assistant explains this and plans with operating lines instead.
 
 ### Key Tram Lines
+
 - **1**: Schottentor ↔ Stefan Fadinger Platz
 - **2**: Dornbach ↔ Friedrich-Engels-Platz
 - **D**: Nußdorfer Straße ↔ Oper
@@ -259,6 +278,7 @@ Full tram coverage includes lines 1, 2, 6, 18, 31, 38, 43, 44, 46, 49, 52, 60, 6
 N6, N8, N25, N31, N35, N38, N41, N43, N46, N49, N54, N60, N62, N66, N68, N71, N75, N81, N82, N84, N85, N87, N88, N89, N90, N91, N95, N96, N97, N98, N99. Night network runs roughly 00:30 to 05:00 when regular service sleeps.
 
 ### Major Stations
+
 - **Westbahnhof**: Main western train station
 - **Südbahnhof**: Southern train connections
 - **Franz-Josefs-Bahnhof**: City center station
@@ -299,6 +319,7 @@ Wiener Linien exposes no live GPS vehicle positions through this server. Map mar
 ## Best Practices
 
 ### Accurate Station Names
+
 - Use official station names when possible
 - Include district numbers for clarity (e.g., "Karlsplatz U1/U2/U4")
 - Check spelling for international users
@@ -306,6 +327,7 @@ Wiener Linien exposes no live GPS vehicle positions through this server. Map mar
 Fuzzy search forgives a lot (Stephans, HBF, Central Station), but the assistant always confirms the matched official name and RBL. Confirm direction bays at big interchanges.
 
 ### Time Management
+
 - Allow buffer time for transfers (5-10 minutes)
 - Check service frequency during off-peak hours
 - Plan for weekend service changes
@@ -313,6 +335,7 @@ Fuzzy search forgives a lot (Stephans, HBF, Central Station), but the assistant 
 Cross-check live departures with alerts on tight connections, and re-check boards a few minutes before boarding.
 
 ### Accessibility
+
 - Many stations have elevators (check line_status)
 - Wheelchair-accessible routes available
 - Audio announcements at major stations
@@ -320,6 +343,7 @@ Cross-check live departures with alerts on tight connections, and re-check board
 ## Troubleshooting
 
 ### No Departures Found
+
 - Verify station name spelling
 - Check if station is in service
 - Try nearby alternative stations
@@ -327,6 +351,7 @@ Cross-check live departures with alerts on tight connections, and re-check board
 Extended: confirm the RBL bay and direction, check the night-service boundary (00:30 to 05:00 limited network), look at traffic_alerts for closures, verify feed health with server_status, and try the nearest interchange (Karlsplatz, Praterstern, Westbahnhof, Hauptbahnhof).
 
 ### Journey Planning Issues
+
 - Ensure both origin and destination are valid
 - Check for service disruptions
 - Try different routing preferences
@@ -334,6 +359,7 @@ Extended: confirm the RBL bay and direction, check the night-service boundary (0
 Extended: resolve each endpoint separately with station_search, relax transfer limits, check alerts for a severed corridor, and accept a partial answer (origin departures plus corridor guidance) when the full route cannot compute.
 
 ### Service Status Problems
+
 - Check for planned maintenance
 - Verify internet connectivity
 - Contact Wiener Linien directly for urgent issues
@@ -341,17 +367,20 @@ Extended: resolve each endpoint separately with station_search, relax transfer l
 Extended: compare line_status against traffic_alerts, check server_status for stale data, fall back to stop_timetable scheduled times labeled as scheduled-only, and add buffer time.
 
 ### Unknown or Ambiguous Station
+
 - Strip generic words and retry the core name (for example "Stephansdome" to "Stephans").
 - Try German and English variants (Hauptbahnhof versus Central Station, Donau versus Danube).
 - Pick from the suggestion list with RBL codes instead of retyping blindly.
 - Share coordinates or a landmark for a nearby_stops query.
 
 ### Wrong City Results
+
 - Ask for list_cities and state which city you mean.
 - Confirm switch_to_city with the lowercase code.
 - Re-enter station names after switching.
 
 ### Stale or Suspicious Data
+
 - Ask for server_status and read the last-updated timestamp.
 - Compare live departures against stop_timetable scheduled times.
 - Check station on-site displays as ground truth and allow extra buffer.
