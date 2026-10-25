@@ -3,6 +3,7 @@
 ## Metro Routes (U-Bahn)
 
 ### U1 Route - Leopoldau ↔ Reumannplatz
+
 - **Line**: U1
 - **Type**: Metro
 - **Color**: #FF0000
@@ -31,6 +32,7 @@
   ]
 
 ### U2 Route - Seestadt ↔ Karlsplatz
+
 - **Line**: U2
 - **Type**: Metro
 - **Color**: #9933CC
@@ -61,6 +63,7 @@
   ]
 
 ### U3 Route - Ottakring ↔ Simmering
+
 - **Line**: U3
 - **Type**: Metro
 - **Color**: #FF6600
@@ -91,6 +94,7 @@
   ]
 
 ### U4 Route - Hütteldorf ↔ Heiligenstadt
+
 - **Line**: U4
 - **Type**: Metro
 - **Color**: #0066CC
@@ -120,6 +124,7 @@
   ]
 
 ### U6 Route - Siebenhirten ↔ Floridsdorf
+
 - **Line**: U6
 - **Type**: Metro
 - **Color**: #CC6600
@@ -155,6 +160,7 @@
 ## Tram Routes
 
 ### Tram D Route - Hauptbahnhof ↔ Nußdorf
+
 - **Line**: D
 - **Type**: Tram
 - **Color**: #FF0000
@@ -205,6 +211,7 @@
   ]
 
 ### Tram 5 Route - Praterstern ↔ Westbahnhof
+
 - **Line**: 5
 - **Type**: Tram
 - **Color**: #FF6600
@@ -237,6 +244,7 @@
   ]
 
 ### Tram 6 Route - Burggasse-Stadthalle ↔ Geiereckstraße
+
 - **Line**: 6
 - **Type**: Tram
 - **Color**: #FF6600
@@ -281,6 +289,7 @@
 ## Bus Routes
 
 ### Bus 1A Route - Stephansplatz ↔ Kaisermühlen
+
 - **Line**: 1A
 - **Type**: Bus
 - **Color**: #0066CC
@@ -301,6 +310,7 @@
   ]
 
 ### Bus 2A Route - Schottentor ↔ Döbling
+
 - **Line**: 2A
 - **Type**: Bus
 - **Color**: #0066CC
@@ -323,6 +333,7 @@
 ## Night Bus Routes
 
 ### Night Bus N25 Route - Ring ↔ Floridsdorf
+
 - **Line**: N25
 - **Type**: Night Bus
 - **Color**: #333333
@@ -345,19 +356,22 @@
 ## Route Features
 
 ### Accessibility Features
+
 - **Low-floor vehicles**: All trams and buses
 - **Audio announcements**: German and English
 - **Visual displays**: Real-time information
 - **Assistance services**: Available on request
 
 ### Route Information
+
 - **Real-time updates**: Available via API
 - **Service frequency**: Varies by line and time
 - **Operating hours**: 5:00 AM - 1:00 AM (24/7 night service)
 - **Fare zones**: Integrated with VOR tariff system
 
 ### Route Optimization
+
 - **Shortest path algorithms**: Used for route planning
 - **Real-time adjustments**: Based on traffic conditions
 - **Capacity management**: Dynamic vehicle allocation
-- **Energy efficiency**: Optimized for sustainability 
+- **Energy efficiency**: Optimized for sustainability

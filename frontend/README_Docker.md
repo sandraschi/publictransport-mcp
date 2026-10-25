@@ -65,9 +65,9 @@ Same commands as PowerShell script.
 
 Once started, the application will be available at:
 
-- **Main Application**: http://localhost:3080
-- **API Status**: http://localhost:3080/api/status
-- **API Endpoints**: http://localhost:3080/api/*
+- **Main Application**: <http://localhost:3080>
+- **API Status**: <http://localhost:3080/api/status>
+- **API Endpoints**: <http://localhost:3080/api/>*
 
 ## Container Details
 
@@ -94,11 +94,13 @@ The following directories are mounted as volumes:
 ### Container Won't Start
 
 1. Check if port 3080 is available:
+
    ```bash
    netstat -an | findstr :3080
    ```
 
 2. Check Docker logs:
+
    ```bash
    docker-compose logs
    ```
@@ -108,16 +110,19 @@ The following directories are mounted as volumes:
 ### Application Not Responding
 
 1. Check container status:
+
    ```bash
    docker-compose ps
    ```
 
 2. Check application logs:
+
    ```bash
    docker-compose logs -f
    ```
 
 3. Verify the API endpoint:
+
    ```bash
    curl http://localhost:3080/api/status
    ```
@@ -125,6 +130,7 @@ The following directories are mounted as volumes:
 ### Build Issues
 
 1. Clean and rebuild:
+
    ```bash
    .\start_wiener_linien.ps1 clean
    .\start_wiener_linien.ps1 build
@@ -132,6 +138,7 @@ The following directories are mounted as volumes:
    ```
 
 2. Check Docker disk space:
+
    ```bash
    docker system df
    ```
@@ -141,6 +148,7 @@ The following directories are mounted as volumes:
 ### Making Changes
 
 1. Stop the container:
+
    ```bash
    .\start_wiener_linien.ps1 stop
    ```
@@ -148,6 +156,7 @@ The following directories are mounted as volumes:
 2. Make your changes to the code
 
 3. Rebuild and start:
+
    ```bash
    .\start_wiener_linien.ps1 build
    .\start_wiener_linien.ps1 start
@@ -192,11 +201,13 @@ docker ps --filter "name=wiener-linien-app"
 Application logs are available in multiple ways:
 
 1. **Container logs**:
+
    ```bash
    docker-compose logs -f
    ```
 
 2. **Host logs directory**:
+
    ```bash
    # Logs are saved to ./logs/ directory
    ```
@@ -210,6 +221,7 @@ To completely remove the application and all associated resources:
 ```
 
 This will:
+
 - Stop the container
 - Remove the container
 - Remove the image
@@ -223,4 +235,4 @@ If you encounter issues:
 1. Check the troubleshooting section above
 2. Review the application logs
 3. Verify Docker Desktop is running properly
-4. Ensure sufficient system resources are available 
+4. Ensure sufficient system resources are available
