@@ -45,21 +45,25 @@ The Wiener Linien Live Map is an interactive web application that displays real-
 ## Features
 
 ### 1. Interactive Map
+
 - Real-time display of vehicle positions
 - Zoom and pan functionality
 - Base map layers (OpenStreetMap, Satellite, etc.)
 
 ### 2. Vehicle Tracking
+
 - Live updates of vehicle positions (every 15 seconds)
 - Color-coded by transport type
 - Direction indicators and route visualization
 
 ### 3. Stop Information
+
 - Clickable stops with departure times
 - Line information and next departures
 - Accessibility information
 
 ### 4. User Interface
+
 - Intuitive controls
 - Responsive design for all screen sizes
 - Dark/light mode support
@@ -68,16 +72,19 @@ The Wiener Linien Live Map is an interactive web application that displays real-
 ## Technical Requirements
 
 ### Performance
+
 - Map updates within 500ms of data receipt
 - Initial page load under 2 seconds
 - Support for at least 1000 concurrent users
 
 ### Reliability
+
 - 99.9% uptime
 - Graceful degradation during API outages
 - Data caching for offline functionality
 
 ### Security
+
 - HTTPS encryption
 - Input validation
 - Rate limiting
@@ -88,6 +95,7 @@ The Wiener Linien Live Map is an interactive web application that displays real-
 ### 1. Core Functionality
 
 #### 1.1 GTFS Data Processing
+
 - **Requirement**: Process GTFS data into structured markdown documentation
 - **Requirement**: Display real-time positions of U-Bahn, tram, and bus vehicles on an interactive map
 - **Acceptance Criteria**:
@@ -97,6 +105,7 @@ The Wiener Linien Live Map is an interactive web application that displays real-
   - Vehicle markers show line number and direction
 
 #### 1.2 Interactive Map Interface
+
 - **Requirement**: Provide an interactive map centered on Vienna with zoom and pan capabilities
 - **Acceptance Criteria**:
   - Map loads with Vienna city center as default view
@@ -105,6 +114,7 @@ The Wiener Linien Live Map is an interactive web application that displays real-
   - Responsive design works on desktop and mobile devices
 
 #### 1.3 Vehicle Filtering
+
 - **Requirement**: Allow users to filter vehicles by type and specific lines
 - **Acceptance Criteria**:
   - Filter by vehicle type (U-Bahn, tram, bus, all)
@@ -115,6 +125,7 @@ The Wiener Linien Live Map is an interactive web application that displays real-
 ### 2. Technical Requirements
 
 #### 2.1 API Integration
+
 - **Requirement**: Properly integrate with Wiener Linien Open Data API
 - **Acceptance Criteria**:
   - Correct API endpoint usage (`/monitor` with proper parameters)
@@ -123,6 +134,7 @@ The Wiener Linien Live Map is an interactive web application that displays real-
   - Graceful handling of API errors and timeouts
 
 #### 2.2 Performance
+
 - **Requirement**: Ensure responsive and efficient application performance
 - **Acceptance Criteria**:
   - Page load time under 3 seconds
@@ -131,6 +143,7 @@ The Wiener Linien Live Map is an interactive web application that displays real-
   - Efficient memory usage for vehicle markers
 
 #### 2.3 Reliability
+
 - **Requirement**: Provide stable and reliable service
 - **Acceptance Criteria**:
   - Application handles API failures gracefully
@@ -141,6 +154,7 @@ The Wiener Linien Live Map is an interactive web application that displays real-
 ### 3. User Experience Requirements
 
 #### 3.1 Interface Design
+
 - **Requirement**: Clean, intuitive, and modern user interface
 - **Acceptance Criteria**:
   - Clear visual hierarchy
@@ -149,6 +163,7 @@ The Wiener Linien Live Map is an interactive web application that displays real-
   - Accessible color scheme and contrast
 
 #### 3.2 Information Display
+
 - **Requirement**: Provide relevant information about vehicles and system status
 - **Acceptance Criteria**:
   - Vehicle popups show line, direction, and timing information
@@ -159,6 +174,7 @@ The Wiener Linien Live Map is an interactive web application that displays real-
 ## Implementation Plan
 
 ### Phase 1: Fix Core API Integration (Priority: Critical)
+
 1. **Fix API Parameter Usage**
    - Replace `stopId` with `rbl` parameter
    - Use correct RBL numbers for Vienna stops
@@ -175,6 +191,7 @@ The Wiener Linien Live Map is an interactive web application that displays real-
    - Add user-friendly error messages
 
 ### Phase 2: Complete Frontend Implementation (Priority: High)
+
 1. **Finish JavaScript Implementation**
    - Complete vehicle marker management
    - Implement proper filter functionality
@@ -186,6 +203,7 @@ The Wiener Linien Live Map is an interactive web application that displays real-
    - Implement responsive design improvements
 
 ### Phase 3: Performance and Reliability (Priority: Medium)
+
 1. **Optimize Performance**
    - Implement efficient marker management
    - Add request debouncing
@@ -199,18 +217,21 @@ The Wiener Linien Live Map is an interactive web application that displays real-
 ## Technical Specifications
 
 ### Backend (Flask)
+
 - **Framework**: Flask 2.2.3+
 - **Caching**: Flask-Caching with 15-second timeout
 - **API Integration**: Requests library with proper error handling
 - **Data Processing**: JSON parsing and transformation
 
 ### Frontend
+
 - **Map Library**: Leaflet.js 1.9.4+
 - **Styling**: CSS3 with responsive design
 - **JavaScript**: Vanilla JS for vehicle management
 - **Icons**: Custom vehicle type icons
 
 ### API Integration
+
 - **Base URL**: `https://www.wienerlinien.at/ogd_realtime`
 - **Main Endpoint**: `/monitor`
 - **Parameters**: `rbl` (stop identifier), `line` (optional filter)
@@ -219,16 +240,19 @@ The Wiener Linien Live Map is an interactive web application that displays real-
 ## Success Metrics
 
 ### Functional Metrics
+
 - **API Success Rate**: >95% successful API requests
 - **Data Accuracy**: Vehicle positions within 100m of actual location
 - **Update Frequency**: Consistent 15-second update intervals
 
 ### Performance Metrics
+
 - **Page Load Time**: <3 seconds
 - **Vehicle Update Time**: <2 seconds
 - **Memory Usage**: <100MB for typical usage
 
 ### User Experience Metrics
+
 - **Interface Responsiveness**: <100ms for user interactions
 - **Error Recovery**: <5 seconds for automatic recovery
 - **Cross-browser Compatibility**: Works on Chrome, Firefox, Safari, Edge
@@ -236,15 +260,18 @@ The Wiener Linien Live Map is an interactive web application that displays real-
 ## Risk Assessment
 
 ### High Risk
+
 - **API Changes**: Wiener Linien may change API structure
 - **Rate Limiting**: Potential IP blocking for excessive requests
 - **Data Availability**: API may be temporarily unavailable
 
 ### Medium Risk
+
 - **Performance**: Large number of vehicles may impact performance
 - **Browser Compatibility**: Different browser implementations
 
 ### Mitigation Strategies
+
 - **API Monitoring**: Implement health checks and fallback mechanisms
 - **Request Optimization**: Efficient caching and request batching
 - **Graceful Degradation**: Fallback to static data when API fails
@@ -252,25 +279,29 @@ The Wiener Linien Live Map is an interactive web application that displays real-
 ## Timeline
 
 ### Week 1: Core Fixes
+
 - Fix API integration issues
 - Implement proper data parsing
 - Add comprehensive error handling
 
 ### Week 2: Frontend Completion
+
 - Complete JavaScript implementation
 - Implement filtering functionality
 - Add user interface improvements
 
 ### Week 3: Testing and Optimization
+
 - Performance testing and optimization
 - Cross-browser testing
 - User acceptance testing
 
 ### Week 4: Deployment and Monitoring
+
 - Production deployment
 - Monitoring setup
 - Documentation updates
 
 ## Conclusion
 
-This PRD outlines a comprehensive plan to transform the current non-functional Wiener Linien Live Map into a robust, user-friendly real-time public transport visualization tool. The focus is on fixing critical API integration issues while maintaining the existing architecture and adding necessary improvements for reliability and user experience. 
+This PRD outlines a comprehensive plan to transform the current non-functional Wiener Linien Live Map into a robust, user-friendly real-time public transport visualization tool. The focus is on fixing critical API integration issues while maintaining the existing architecture and adding necessary improvements for reliability and user experience.
