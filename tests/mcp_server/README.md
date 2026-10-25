@@ -22,26 +22,31 @@ tests/mcp_server/
 ## Running Tests
 
 ### Run All Tests
+
 ```bash
 pytest tests/mcp_server/
 ```
 
 ### Run Unit Tests Only
+
 ```bash
 pytest tests/mcp_server/unit/
 ```
 
 ### Run Integration Tests Only
+
 ```bash
 pytest tests/mcp_server/integration/
 ```
 
 ### Run Specific Test File
+
 ```bash
 pytest tests/mcp_server/unit/test_tools_departures.py
 ```
 
 ### Run with Coverage
+
 ```bash
 pytest tests/mcp_server/ --cov=frontend/mcp_server --cov-report=html
 ```
@@ -127,4 +132,3 @@ async def test_workflow():
 - Tests mock external dependencies (API calls, database)
 - Integration tests may require actual server initialization
 - FastMCP tool access may vary by version - tests use registration verification
-
