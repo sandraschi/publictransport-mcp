@@ -1,6 +1,7 @@
 # Wiener Linien Project Rulebook
 
 ## Table of Contents
+
 1. [General Principles](#general-principles)
 2. [Script Syntax Standards](#script-syntax-standards)
 3. [Logging and Logger System](#logging-and-logger-system)
@@ -17,16 +18,19 @@
 ## General Principles
 
 ### 1.1 Reliability First
+
 - **Rule**: The application must never crash due to external API failures
 - **Rule**: Always provide fallback mechanisms for critical functionality
 - **Rule**: Graceful degradation is preferred over complete failure
 
 ### 1.2 User Experience
+
 - **Rule**: Users should always see meaningful feedback, never blank screens
 - **Rule**: Loading states must be implemented for all async operations
 - **Rule**: Error messages must be user-friendly and actionable
 
 ### 1.3 Code Quality
+
 - **Rule**: All code must be readable and self-documenting
 - **Rule**: Follow PEP 8 for Python code
 - **Rule**: Use meaningful variable and function names
@@ -35,6 +39,7 @@
 ---
 
 ## Proof of rule following
+
 - **Rule**: To prove this was read and is followed, start all output in the ai ai windows with "i love you"
 
 ## Script Syntax Standards
@@ -42,6 +47,7 @@
 ### 2.1 Python Code Standards
 
 #### 2.1.1 Imports
+
 ```python
 # ✅ CORRECT - Standard library first, then third-party, then local
 import os
@@ -58,6 +64,7 @@ from .models import vehicle
 ```
 
 #### 2.1.2 Function Definitions
+
 ```python
 # ✅ CORRECT - Type hints, docstrings, clear naming
 def fetch_vehicle_data(rbl_number: str, timeout: int = 10) -> Dict[str, any]:
@@ -78,6 +85,7 @@ def fetch_vehicle_data(rbl_number: str, timeout: int = 10) -> Dict[str, any]:
 ```
 
 #### 2.1.3 Variable Naming
+
 ```python
 # ✅ CORRECT - Descriptive names
 vehicle_positions = []
@@ -93,6 +101,7 @@ ts = time.time()
 ### 2.2 JavaScript Code Standards
 
 #### 2.2.1 Variable Declarations
+
 ```javascript
 // ✅ CORRECT - Use const/let, descriptive names
 const vehicleMarkers = new Map();
@@ -106,6 +115,7 @@ var url = 'https://...';
 ```
 
 #### 2.2.2 Function Definitions
+
 ```javascript
 // ✅ CORRECT - Clear naming, error handling
 async function fetchVehiclePositions(vehicleType = null, lineFilter = null) {
@@ -134,6 +144,7 @@ async function fetchVehiclePositions(vehicleType = null, lineFilter = null) {
 ### 3.1 Logger Configuration
 
 #### 3.1.1 Setup
+
 ```python
 import logging
 from logging.handlers import RotatingFileHandler
@@ -186,6 +197,7 @@ logger = setup_logger('wiener_linien', 'logs/app.log')
 ```
 
 #### 3.1.2 Logging Levels
+
 ```python
 # ✅ CORRECT - Appropriate log levels
 logger.debug("Processing vehicle data for RBL %s", rbl_number)
@@ -202,6 +214,7 @@ logger.error("Successfully fetched vehicles")  # Use info level
 ### 3.2 Structured Logging
 
 #### 3.2.1 Context Information
+
 ```python
 # ✅ CORRECT - Include context in logs
 logger.info("API request completed", extra={
@@ -216,6 +229,7 @@ logger.info("API request completed")
 ```
 
 #### 3.2.2 Error Logging
+
 ```python
 # ✅ CORRECT - Full error context
 try:
@@ -238,6 +252,7 @@ except requests.exceptions.RequestException as e:
 ### 4.1 Exception Handling Strategy
 
 #### 4.1.1 Never Let Exceptions Bubble Up
+
 ```python
 # ✅ CORRECT - Always catch and handle exceptions
 @app.route('/api/vehicles')
@@ -260,6 +275,7 @@ def get_vehicles():
 ```
 
 #### 4.1.2 Specific Exception Handling
+
 ```python
 # ✅ CORRECT - Handle specific exceptions
 try:
@@ -286,6 +302,7 @@ except Exception as e:
 ### 4.2 Input Validation
 
 #### 4.2.1 Parameter Validation
+
 ```python
 # ✅ CORRECT - Validate all inputs
 def fetch_vehicle_data(rbl_number: str, vehicle_type: str = None) -> Dict:
@@ -304,6 +321,7 @@ def fetch_vehicle_data(rbl_number: str, vehicle_type: str = None) -> Dict:
 ```
 
 #### 4.2.2 Data Sanitization
+
 ```python
 # ✅ CORRECT - Sanitize data before use
 def sanitize_line_name(line_name: str) -> str:
@@ -319,6 +337,7 @@ def sanitize_line_name(line_name: str) -> str:
 ### 4.3 Graceful Degradation
 
 #### 4.3.1 Fallback Mechanisms
+
 ```python
 # ✅ CORRECT - Provide fallbacks for critical functionality
 def get_vehicle_positions():
@@ -351,6 +370,7 @@ def get_vehicle_positions():
 ### 5.1 API Request Standards
 
 #### 5.1.1 Request Configuration
+
 ```python
 # ✅ CORRECT - Proper request configuration
 def make_api_request(url: str, params: Dict = None, timeout: int = 10) -> requests.Response:
@@ -375,6 +395,7 @@ def make_api_request(url: str, params: Dict = None, timeout: int = 10) -> reques
 ```
 
 #### 5.1.2 Rate Limiting Compliance
+
 ```python
 # ✅ CORRECT - Respect API rate limits
 import time
@@ -413,6 +434,7 @@ def fetch_wiener_linien_data(rbl_number: str):
 ### 5.2 Response Handling
 
 #### 5.2.1 Data Validation
+
 ```python
 # ✅ CORRECT - Validate API responses
 def validate_api_response(data: Dict) -> bool:
@@ -449,6 +471,7 @@ def parse_vehicle_data(api_response: Dict) -> List[Dict]:
 ## Code Organization
 
 ### 6.1 File Structure
+
 ```
 frontend/
 ├── app.py                 # Main Flask application
@@ -474,6 +497,7 @@ frontend/
 ```
 
 ### 6.2 Module Separation
+
 ```python
 # ✅ CORRECT - Separate concerns into modules
 # utils/api_client.py
@@ -507,11 +531,13 @@ data_parser = VehicleDataParser()
 ## Testing Requirements
 
 ### 7.1 Test Coverage
+
 - **Rule**: All API integration functions must have unit tests
 - **Rule**: Error handling paths must be tested
 - **Rule**: Minimum 80% code coverage for critical modules
 
 ### 7.2 Test Structure
+
 ```python
 # ✅ CORRECT - Comprehensive test structure
 import unittest
@@ -547,6 +573,7 @@ class TestWienerLinienAPIClient(unittest.TestCase):
 ## Performance Guidelines
 
 ### 8.1 Caching Strategy
+
 ```python
 # ✅ CORRECT - Implement proper caching
 from flask_caching import Cache
@@ -563,6 +590,7 @@ def get_vehicle_data(rbl_number: str):
 ```
 
 ### 8.2 Memory Management
+
 ```python
 # ✅ CORRECT - Efficient memory usage
 def process_vehicle_data(vehicles: List[Dict]) -> List[Dict]:
@@ -586,11 +614,13 @@ def process_vehicle_data(vehicles: List[Dict]) -> List[Dict]:
 ## Security Considerations
 
 ### 9.1 Input Validation
+
 - **Rule**: All user inputs must be validated and sanitized
 - **Rule**: Never trust external API data without validation
 - **Rule**: Use parameterized queries to prevent injection attacks
 
 ### 9.2 Error Information
+
 ```python
 # ✅ CORRECT - Don't expose sensitive information in errors
 try:
@@ -607,6 +637,7 @@ except Exception as e:
 ## Documentation Standards
 
 ### 10.1 Code Documentation
+
 ```python
 # ✅ CORRECT - Comprehensive docstrings
 def parse_vehicle_coordinates(monitor_data: Dict) -> Tuple[float, float]:
@@ -636,6 +667,7 @@ def parse_vehicle_coordinates(monitor_data: Dict) -> Tuple[float, float]:
 ```
 
 ### 10.2 README Updates
+
 - **Rule**: Update README.md when adding new features
 - **Rule**: Include setup instructions and troubleshooting
 - **Rule**: Document API changes and breaking changes
@@ -645,7 +677,9 @@ def parse_vehicle_coordinates(monitor_data: Dict) -> Tuple[float, float]:
 ## Enforcement
 
 ### 11.1 Code Review Checklist
+
 Before merging any code, reviewers must check:
+
 - [ ] All functions have proper error handling
 - [ ] Logging is implemented for critical operations
 - [ ] Input validation is in place
@@ -654,7 +688,9 @@ Before merging any code, reviewers must check:
 - [ ] Code follows syntax standards
 
 ### 11.2 Automated Checks
+
 Consider implementing:
+
 - Pre-commit hooks for code formatting
 - CI/CD pipeline for automated testing
 - Linting tools (flake8, pylint) for Python
@@ -670,4 +706,4 @@ Consider implementing:
 
 ---
 
-**Remember**: This rulebook is a living document. Update it as the project evolves and new patterns emerge. All team members are responsible for following these rules and suggesting improvements. 
+**Remember**: This rulebook is a living document. Update it as the project evolves and new patterns emerge. All team members are responsible for following these rules and suggesting improvements.

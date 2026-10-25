@@ -5,7 +5,9 @@
 ## Overview
 
 ### 🚇 Line U1: Oberlaa - Leopoldau
-#### Variants:
+
+#### Variants
+
 - Wien Leopoldau
 - Wien Alaudagasse
 - Wien Leopoldau
@@ -28,11 +30,15 @@
 - Wien Alaudagasse
 
 **Details:**
+
 - **Type**: Metro
 - **Agency**: Wiener Linien GmbH & Co KG
 - **Color**: `#E3000F`
+
 ### 🚇 Line U2: Seestadt - Schottentor
-#### Variants:
+
+#### Variants
+
 - Wien Karlsplatz
 - Wien Karlsplatz
 - Wien Karlsplatz
@@ -43,11 +49,15 @@
 - Wien Karlsplatz
 
 **Details:**
+
 - **Type**: Metro
 - **Agency**: Wiener Linien GmbH & Co KG
 - **Color**: `#A862A4`
+
 ### 🚇 Line U3: Ottakring - Simmering
-#### Variants:
+
+#### Variants
+
 - Wien Simmering
 - Wien Simmering
 - Wien Simmering
@@ -62,11 +72,15 @@
 - Wien Simmering
 
 **Details:**
+
 - **Type**: Metro
 - **Agency**: Wiener Linien GmbH & Co KG
 - **Color**: `#EF7C00`
+
 ### 🚇 Line U4: Hütteldorf - Heiligenstadt
-#### Variants:
+
+#### Variants
+
 - Wien Heiligenstadt
 - Wien Heiligenstadt
 - Wien Heiligenstadt
@@ -85,11 +99,15 @@
 - Wien Heiligenstadt
 
 **Details:**
+
 - **Type**: Metro
 - **Agency**: Wiener Linien GmbH & Co KG
 - **Color**: `#319F49`
+
 ### 🚇 Line U6: Siebenhirten - Floridsdorf
-#### Variants:
+
+#### Variants
+
 - Wien Floridsdorf
 - Wien Floridsdorf
 - Wien Floridsdorf
@@ -110,6 +128,7 @@
 - Wien Alterlaa
 
 **Details:**
+
 - **Type**: Metro
 - **Agency**: Wiener Linien GmbH & Co KG
 - **Color**: `#9D6830`

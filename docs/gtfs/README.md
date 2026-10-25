@@ -22,4 +22,3 @@ python scripts\load_gtfs_to_db.py scripts\gtfs_data\wienerlinien-gtfs.zip --meta
 1. Run `python scripts\process_gtfs.py` to refresh markdown outputs with the new RBL data.
 2. Restart the frontend container (`docker compose restart frontend`). The API will immediately begin returning realtime vehicles for RBL-enabled lines (e.g. `GET /api/vehicles?line=U3`).
 3. For full polylines, rerun the loader without `--test-mode` so the `shapes` table is complete; the map then renders route geometry.
-

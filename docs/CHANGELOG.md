@@ -50,4 +50,3 @@
   - `frontend/vehicle_service.py` throttles monitor calls, honours line filters, and de-duplicates RBLs so `/api/vehicles` reliably returns live positions (e.g. `line=U3`).
 - Updated the frontend socket client (`frontend/static/js/map.js`) to use the `/ws/socket.io` namespace, restoring live updates without 404s.
 - Documented the new workflow in `README.md` and `docs/gtfs/README.md` (how to run the loader, regenerate markdown, and verify realtime results).
-

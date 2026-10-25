@@ -3,6 +3,7 @@
 ## Dashboards Overview
 
 ### Operations Command Center (Grafana)
+
 - **Heartbeat Stat**: Monitors GTFS loader log heartbeats; turns amber when no entries seen for 15 minutes.
 - **Heartbeat Feed**: Shows the latest loader stages with timestamps.
 - **Log Level Trend**: Aggregates Loki log levels to spot spikes in errors.
@@ -12,6 +13,7 @@
 - **Raw Logs Panel**: Provides filtered Loki stream for ad-hoc debugging.
 
 ### Commuter Status Board (Frontend `/status`)
+
 - Headline service state with total vehicles & delays.
 - Mode-specific vehicle counts (metro, tram, bus, etc.).
 - GTFS loader heartbeat summary (uses shared heartbeat file/logs).
