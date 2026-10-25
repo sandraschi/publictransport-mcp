@@ -37,7 +37,7 @@ The `import_dashboard.ps1` script automates the process of importing Grafana das
 
 ### Parameters
 
-- `-GrafanaUrl`: Base URL of the Grafana instance (default: http://localhost:3140)
+- `-GrafanaUrl`: Base URL of the Grafana instance (default: <http://localhost:3140>)
 - `-Username`: Grafana username (default: admin)
 - `-Password`: Grafana password (default: windsurf123)
 - `-DashboardPath`: Path to a single dashboard JSON file or directory containing dashboards (default: .\dashboards)
@@ -45,16 +45,19 @@ The `import_dashboard.ps1` script automates the process of importing Grafana das
 ### Examples
 
 1. **Basic Usage** (uses all defaults):
+
    ```powershell
    .\import_dashboard.ps1
    ```
 
 2. **Custom Grafana Instance**:
+
    ```powershell
    .\import_dashboard.ps1 -GrafanaUrl "http://grafana:3000" -Username admin -Password yourpassword
    ```
 
 3. **Specific Dashboard**:
+
    ```powershell
    .\import_dashboard.ps1 -DashboardPath ".\custom-dashboards\my-dashboard.json"
    ```

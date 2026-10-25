@@ -11,6 +11,7 @@ changelog:
 # SandrasRules (Global Rulebook)
 
 ## Table of Contents
+
 - [Change Management](#change-management)
 - [Development Workflow](#development-workflow)
 - [FastMCP 3.1 Repository Standards](#fastmcp-210-repository-standards)
@@ -20,9 +21,11 @@ changelog:
 ## Change Management
 
 ### Rule to prove this was read
+
 - Add "lgr1 " to cascade outputs
 
 ### Change Control
+
 - Never remove, rewrite, or break major functionality without explicit user instruction
 - Always clarify and confirm before making breaking changes
 - Provide explicit diffs and summaries for all major edits
@@ -36,6 +39,7 @@ changelog:
 #### 1. File System Operations
 
 ##### Directory Operations
+
 ```powershell
 # Create directory (and parent directories if needed)
 New-Item -ItemType Directory -Force -Path "path\to\directory"
@@ -50,6 +54,7 @@ cd "path\to\directory"
 ```
 
 ##### File Operations
+
 ```powershell
 # View file content
 Get-Content -Path "file.txt"
@@ -67,6 +72,7 @@ Test-Path -Path "file.txt"
 #### 2. Command Chaining
 
 ##### Correct (PowerShell)
+
 ```powershell
 # Sequential commands
 command1; command2; command3
@@ -79,6 +85,7 @@ Get-Process | Where-Object { $_.CPU -gt 10 } | Sort-Object -Property CPU -Descen
 ```
 
 ##### Incorrect (Linux-style)
+
 ```bash
 # Don't use Linux-style chaining
 command1 && command2
@@ -144,6 +151,7 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 ```
 
 #### 8. Best Practices
+
 - Always use full cmdlet names in scripts (e.g., `Remove-Item` instead of `rm`)
 - Use `-WhatIf` parameter to test destructive commands
 - Prefer `-Filter` over `Where-Object` for better performance with file operations
@@ -151,12 +159,14 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 - Always validate paths with `Test-Path` before operations
 
 ### 1. Version Control
+
 - Use feature branches for all changes
 - Write clear, descriptive commit messages
 - Open pull requests for code review
 - Keep main branch stable and deployable
 
 ### 2. Code Style
+
 - Follow language-specific style guides
 - Use consistent indentation (spaces)
 - Include comments for complex logic
@@ -167,6 +177,7 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 **CRITICAL**: All Basic Memory notes MUST include a timestamp in their title or at the start of content. This is required for proper sorting and retrieval.
 
 ### 1. Note Structure
+
 - **Title Format**: `[YYYY-MM-DD HH:MM] Clear, descriptive title`
 - Start with a brief summary
 - Use hierarchical headers for organization
@@ -178,6 +189,7 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 - Add relevant categorization tags
 
 ### 2. Content Guidelines
+
 - Be concise but thorough
 - Use bullet points for lists
 - Include code blocks with language specification
@@ -187,6 +199,7 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 ## Docker Standards
 
 ### 1. Containerization
+
 - Use multi-stage builds to minimize image size
 - Specify exact versions for base images
 - Run as non-root user when possible
@@ -194,6 +207,7 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 - Keep containers ephemeral
 
 ### 2. Docker Compose
+
 - Use version 3.x+ syntax
 - Define resource limits
 - Use environment files for sensitive data
@@ -201,6 +215,7 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 - Include health checks
 
 ### 3. Best Practices
+
 - One process per container
 - Use volumes for persistent data
 - Implement proper logging
@@ -210,6 +225,7 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 ## GitHub Standards
 
 ### 1. Repository Setup
+
 - Include comprehensive README.md
 - Add .gitignore appropriate for the project
 - Set up branch protection rules
@@ -217,6 +233,7 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 - Add issue and PR templates
 
 ### 2. Workflow
+
 - Use feature branches
 - Require PR reviews
 - Squash and merge by default
@@ -226,18 +243,21 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 ## Monitoring & Observability
 
 ### 1. Prometheus
+
 - Define clear metric names and labels
 - Use appropriate metric types (counter, gauge, histogram)
 - Set up proper retention policies
 - Document all metrics
 
 ### 2. Grafana
+
 - Create meaningful dashboards
 - Use variables for flexibility
 - Set up proper alerting
 - Document data sources and queries
 
 ### 3. Loki & Promtail
+
 - Use proper label indexing
 - Set up log rotation
 - Define log retention policies
@@ -246,6 +266,7 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 ## Basic Memory Notes (continued)
 
 ### 3. Examples
+
 ```markdown
 # [2025-07-30 14:30] Project Meeting Notes
 
@@ -267,11 +288,13 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 ## General Coding Principles
 
 ### 1.1 Reliability
+
 - The application must never crash due to external API failures
 - Always provide fallback mechanisms for critical functionality
 - Graceful degradation is preferred over complete failure
 
 ### 1.2 Code Quality
+
 - All code must be readable and self-documenting
 - Follow language-specific style guides (PEP 8 for Python, etc.)
 - Use meaningful variable and function names
@@ -279,6 +302,7 @@ $absolutePath = Resolve-Path -Path "./relative/path"
 - Document all public interfaces
 
 ## 2. Repository Structure
+
 ```
 mcp-project/
 ├── .github/              # GitHub Actions workflows
@@ -300,6 +324,7 @@ mcp-project/
 ```
 
 ### 2. Naming Conventions
+
 - **Repository Names**:
   - Must end with `-mcp` (e.g., `filesystem-mcp`, `llm-mcp`)
   - Use kebab-case (e.g., `my-service-mcp`)
@@ -318,6 +343,7 @@ mcp-project/
   - One sentence per line for better diffing
 
 ### 3. Versioning
+
 - Follow Semantic Versioning (MAJOR.MINOR.PATCH)
 - Update version in `pyproject.toml` and `__init__.py`
 - Create a Git tag for each release
@@ -325,6 +351,7 @@ mcp-project/
 ## 4. GitHub Repository Management
 
 ### 4.1 Repository Setup
+
 - **Naming Conventions**:
   - Use lowercase with hyphens (e.g., `mcp-server-name`)
   - End MCP server repositories with `-mcp` (e.g., `handbrake-mcp`)
@@ -347,6 +374,7 @@ mcp-project/
   - Do not allow bypassing the above settings
 
 ### 4.2 Branching Strategy
+
 - `main` - Production-ready code
 - `develop` - Integration branch for features
 - `feature/` - New features (e.g., `feature/user-authentication`)
@@ -355,6 +383,7 @@ mcp-project/
 - `hotfix/` - Critical production fixes (e.g., `hotfix/security-patch`)
 
 ### 4.3 Issue Management
+
 - **Issue Templates**:
   - Bug Report
   - Feature Request
@@ -381,6 +410,7 @@ mcp-project/
   6. Close when resolved and verified
 
 ### 4.4 Pull Request Process
+
 - **PR Title**:
   - Start with type: `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`
   - Use imperative mood ("Add" not "Added" or "Adds")
@@ -402,6 +432,7 @@ mcp-project/
   - Follows coding standards
 
 ### 4.5 Release Management
+
 - **Versioning**:
   - Follow Semantic Versioning (MAJOR.MINOR.PATCH)
   - Use GitHub Releases for versioning
@@ -418,6 +449,7 @@ mcp-project/
   8. Merge `main` back into `develop`
 
 ### 4.6 GitHub Actions
+
 - **Required Workflows**:
   - CI/CD pipeline
   - Code quality checks
@@ -431,18 +463,21 @@ mcp-project/
   - Use environment-specific secrets when needed
 
 ### 4.7 Project Boards
+
 - Use GitHub Projects for tracking progress
 - Create columns for: Backlog, To Do, In Progress, Review, Done
 - Automate issue/PR movement with GitHub Actions
 - Use milestones for version tracking
 
 ### 4.8 Documentation
+
 - Maintain a comprehensive README.md
 - Keep CONTRIBUTING.md up to date
 - Document setup and deployment processes
 - Include code examples and API documentation
 
 ### 4.9 Community Guidelines
+
 - Adopt a Code of Conduct
 - Be welcoming to new contributors
 - Acknowledge all contributions
@@ -451,6 +486,7 @@ mcp-project/
 ### 4.10 Security
 
 #### 4.10.1 Dependency Management
+
 - **Dependabot**:
   - Enable Dependabot for automated dependency updates
   - Configure in `.github/dependabot.yml`
@@ -467,6 +503,7 @@ mcp-project/
   - Monitor for known vulnerabilities
 
 #### 4.10.2 Static Analysis with Semgrep
+
 - **Configuration**:
   - Required file: `.semgrep.yml` in repository root
   - Include standard security rules
@@ -484,12 +521,14 @@ mcp-project/
   - Prevent unsafe deserialization
 
 #### 4.10.3 Security Scanning
+
 - **SAST/DAST**:
   - Run weekly scans using GitHub CodeQL
   - Configure in `codeql-analysis.yml`
   - Review and address findings
 
 - **Dependency Scanning**:
+
   ```bash
   # Install tools
   pip install safety pip-audit
@@ -500,6 +539,7 @@ mcp-project/
   ```
 
 #### 4.10.4 Best Practices
+
 - **Secrets Management**:
   - Never commit secrets to version control
   - Use GitHub Secrets for CI/CD
@@ -518,12 +558,14 @@ mcp-project/
     - Contact information for security issues
 
 #### 4.10.5 Required Files
+
 1. `.github/workflows/semgrep.yml` - Semgrep CI workflow
 2. `.semgrep.yml` - Custom Semgrep rules
 3. `SECURITY.md` - Security policy and reporting
 4. `.github/dependabot.yml` - Dependabot configuration
 
 ### 4.11 Repository Maintenance
+
 - Regularly update dependencies
 - Close stale issues and PRs
 - Archive inactive repositories
@@ -534,6 +576,7 @@ mcp-project/
 **Note**: These standards apply to all FastMCP 3.1+ servers. All new MCP servers must implement these packaging standards.
 
 ### 2.1 Package Structure
+
 ```
 package/
 ├── package/             # Python package
@@ -546,6 +589,7 @@ package/
 ```
 
 ### 2.2 pyproject.toml Example
+
 ```toml
 [build-system]
 requires = ["setuptools>=42"]
@@ -573,6 +617,7 @@ mycli = "mypackage.cli:main"
 ```
 
 ### 2.3 Building and Publishing
+
 ```bash
 # Install build tools
 python -m pip install --upgrade build twine
@@ -587,6 +632,7 @@ twine upload dist/*
 ## Bug & Research Handling
 
 ### 1. Bug Reports (`bug: ... :bug`)
+
 1. Research the bug thoroughly
 2. Create directory: `/.windsurf/docs/flows/bugs/YYMMDD_short-description/`
 3. Add files:
@@ -594,6 +640,7 @@ twine upload dist/*
    - `analysis.md`: Your findings and solution
 
 ### 2. Research Requests (`research: ... :research`)
+
 1. Research the topic thoroughly (300 lines optimal)
 2. Create directory: `/.windsurf/docs/flows/research/YYMMDD_short-topic/`
 3. Split into markdown files:
@@ -604,16 +651,19 @@ twine upload dist/*
 ## Security & Best Practices
 
 ### 1. Authentication
+
 - Never hardcode credentials
 - Use environment variables for sensitive data
 - Follow principle of least privilege
 
 ### 2. Dependencies
+
 - Keep dependencies up to date
 - Audit for known vulnerabilities
 - Document all third-party dependencies
 
 ### 3. Error Handling
+
 - Never expose stack traces to end users
 - Log errors with sufficient context
 - Implement graceful degradation
@@ -621,11 +671,13 @@ twine upload dist/*
 ## Documentation Standards
 
 ### 1. Code Documentation
+
 - Document public APIs and interfaces
 - Keep README files updated
 - Document environment setup
 
 ### 2. Project Documentation
+
 - Maintain CHANGELOG.md
 - Document architectural decisions
 - Keep documentation in sync with code
@@ -633,11 +685,13 @@ twine upload dist/*
 ## Performance Guidelines
 
 ### 1. Optimization
+
 - Profile before optimizing
 - Optimize for readability first
 - Consider memory usage and execution time
 
 ### 2. Testing
+
 - Write tests for new features
 - Maintain good test coverage
 - Run tests before merging to main
@@ -645,13 +699,15 @@ twine upload dist/*
 ## File Organization
 
 ### 1. Modular Architecture
+
 - Keep files under 300 lines
 - Group related functionality
 - Use clear, descriptive names
 
 ### 2. Directory Structure
 
-#### For non-MCP repositories:
+#### For non-MCP repositories
+
 ```
 project/
 ├── src/                # Source code
@@ -664,12 +720,14 @@ project/
 ### Prompts vs. Scripts
 
 ### Prompts (DXT-specific)
+
 - Used for dynamic text generation and processing
 - Stored in `prompts/` directory
 - Follow DXT prompt engineering guidelines
 - Version controlled with the code
 
 ### Scripts
+
 - Executable utilities and automation
 - Stored in `scripts/` directory
 - Must be written in PowerShell (Windows) or shell (Linux/Unix)
@@ -678,31 +736,37 @@ project/
 ## Markdown Linting Rules
 
 ### 1. Headers
+
 - Add one blank line before and after headers
 - No trailing punctuation in headers
 - Use proper header hierarchy (H1 → H2 → H3)
 
 ### 2. Lists
+
 - Add blank lines before and after lists
 - Use `-` for unordered lists
 - Indent nested lists with 2 spaces
 
 ### 3. Code Blocks
+
 - Surround with blank lines
 - Specify language after opening backticks
 - Keep lines under 120 characters
 
 ### 4. Links and Images
+
 - Use descriptive link text
 - Place URLs at the bottom if using reference-style links
 - Add alt text for images
 
 ### 5. Tables
+
 - Use pipes and dashes
 - Align columns properly
 - Add blank lines before and after
 
 ### 6. Line Length
+
 - Maximum 120 characters per line
 - Break long URLs if needed
 - Use proper line wrapping for long sentences
@@ -710,6 +774,7 @@ project/
 ## Code Review Process
 
 ### 1. Review Checklist
+
 - [ ] Code follows style guide
 - [ ] Tests are included
 - [ ] Documentation is updated
@@ -717,6 +782,7 @@ project/
 - [ ] No sensitive data exposed
 
 ### 2. Approval Process
+
 - At least one approval required
 - All tests must pass
 - Resolve all comments before merging
@@ -724,6 +790,7 @@ project/
 ## Markdown and Documentation Standards
 
 ### 1. File Structure
+
 - All documentation files must have YAML frontmatter with:
   - `title`: Document title
   - `description`: Brief description
@@ -733,6 +800,7 @@ project/
   - `tags`: List of relevant tags
 
 ### 2. Content Organization
+
 - Use H1 (#) for main title only
 - Use H2 (##) for main sections
 - Use H3 (###) for subsections
@@ -741,6 +809,7 @@ project/
 - Include a table of contents for documents >100 lines
 
 ### 3. Code Blocks
+
 - Always specify the language after the opening backticks
 - Include comments explaining complex code blocks
 - Keep code blocks focused and concise
@@ -749,6 +818,7 @@ project/
 ## Repository Structure Standards
 
 ### 1. Required Files
+
 - `README.md`: Project overview and setup instructions
 - `CONTRIBUTING.md`: Contribution guidelines
 - `CHANGELOG.md`: Version history
@@ -759,6 +829,7 @@ project/
 - `.dockerignore` (if using Docker)
 
 ### 2. Directory Structure
+
 ```
 project/
 ├── src/                    # Source code
@@ -777,6 +848,7 @@ project/
 ## Code Quality Standards
 
 ### 1. Python Specific
+
 - Use type hints for all function/method signatures
 - Follow PEP 8 style guide
 - Maximum function length: 50 lines
@@ -785,6 +857,7 @@ project/
 - Use docstrings for all public modules, classes, and functions
 
 ### 2. Error Handling
+
 - Use specific exception types
 - Include context in error messages
 - Log errors before raising when appropriate
@@ -793,6 +866,7 @@ project/
 ## CI/CD Standards
 
 ### 1. Required Checks
+
 - Linting (flake8, black, isort for Python)
 - Unit tests with coverage reporting
 - Integration tests (if applicable)
@@ -800,6 +874,7 @@ project/
 - Build verification
 
 ### 2. Deployment
+
 - Use semantic versioning (SemVer)
 - Automate releases with GitHub Actions
 - Include release notes generation
@@ -808,12 +883,14 @@ project/
 ## Dependency Management
 
 ### 1. Python Dependencies
+
 - Pin all direct dependencies with exact versions
 - Use `pyproject.toml` for Python packages
 - Include `requirements-dev.txt` for development dependencies
 - Regularly update dependencies with dependabot
 
 ### 2. Security
+
 - Scan for vulnerabilities in dependencies
 - Never store secrets in version control
 - Use environment variables or secret management
@@ -822,6 +899,7 @@ project/
 ## Security Standards
 
 ### 1. General
+
 - Follow principle of least privilege
 - Validate all inputs
 - Sanitize all outputs
@@ -829,6 +907,7 @@ project/
 - Implement rate limiting for public APIs
 
 ### 2. Authentication & Authorization
+
 - Use OAuth 2.0 or OpenID Connect for authentication
 - Implement role-based access control (RBAC)
 - Use secure password hashing (bcrypt, Argon2)
@@ -837,12 +916,14 @@ project/
 ## Performance Guidelines
 
 ### 1. Application Performance
+
 - Optimize database queries (use indexes, avoid N+1 queries)
 - Implement caching where appropriate
 - Use pagination for large datasets
 - Monitor and optimize memory usage
 
 ### 2. API Performance
+
 - Implement response compression
 - Use HTTP caching headers
 - Support conditional requests (ETag, Last-Modified)
@@ -851,12 +932,14 @@ project/
 ## Logging and Monitoring
 
 ### 1. Logging Standards
+
 - Use structured logging (JSON format)
 - Include correlation IDs
 - Log at appropriate levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 - Include timestamps in UTC
 
 ### 2. Monitoring
+
 - Track key metrics (response times, error rates, etc.)
 - Set up alerts for critical issues
 - Monitor resource usage
@@ -865,6 +948,7 @@ project/
 ## API Design Standards
 
 ### 1. REST API Guidelines
+
 - Use nouns for resources, not verbs
 - Use plural nouns for collections
 - Use kebab-case for URLs
@@ -872,12 +956,14 @@ project/
 - Use HTTP methods appropriately (GET, POST, PUT, PATCH, DELETE)
 
 ### 2. Versioning
+
 - Version APIs in the URL path (`/api/v1/...`)
 - Include API version in response headers
 - Document breaking changes
 - Support multiple versions during transition periods
 
 ### 3. Error Handling
+
 - Return appropriate HTTP status codes
 - Provide helpful error messages
 - Include error codes for programmatic handling
@@ -886,12 +972,14 @@ project/
 ## Documentation Requirements
 
 ### 1. Code Documentation
+
 - Document all public APIs
 - Include examples in docstrings
 - Document all configuration options
 - Include type information in function signatures
 
 ### 2. Project Documentation
+
 - Keep README up to date
 - Document setup and installation
 - Include troubleshooting guide
@@ -900,12 +988,14 @@ project/
 ## Testing Standards
 
 ### 1. Test Structure
+
 - Follow Arrange-Act-Assert pattern
 - Keep tests independent
 - Use descriptive test names
 - Test edge cases and error conditions
 
 ### 2. Test Data
+
 - Use factories for test data
 - Clean up test data after tests
 - Use realistic test data
@@ -914,12 +1004,14 @@ project/
 ## Code Review Guidelines
 
 ### 1. Review Process
+
 - Keep PRs small and focused
 - Request reviews from appropriate team members
 - Address all comments before merging
 - Use GitHub's review features
 
 ### 2. What to Look For
+
 - Code correctness
 - Performance implications
 - Security considerations
@@ -929,11 +1021,13 @@ project/
 ## Security Incident Response
 
 ### 1. Reporting
+
 - Report security issues immediately
 - Use private channels for sensitive discussions
 - Document all findings and actions
 
 ### 2. Response Process
+
 - Acknowledge receipt of report
 - Investigate the issue
 - Develop and test a fix
@@ -943,12 +1037,14 @@ project/
 ## Performance Monitoring
 
 ### 1. Key Metrics
+
 - Response times (p50, p90, p99)
 - Error rates
 - Resource utilization
 - Throughput
 
 ### 2. Alerting
+
 - Set up alerts for critical metrics
 - Define escalation policies
 - Document incident response procedures
@@ -956,12 +1052,14 @@ project/
 ## Accessibility Standards
 
 ### 1. Web Accessibility
+
 - Follow WCAG 2.1 AA guidelines
 - Ensure keyboard navigation
 - Provide text alternatives for non-text content
 - Use semantic HTML
 
 ### 2. API Accessibility
+
 - Provide comprehensive documentation
 - Include examples for all endpoints
 - Support content negotiation
@@ -970,12 +1068,14 @@ project/
 ## Internationalization (i18n)
 
 ### 1. String Externalization
+
 - Externalize all user-facing strings
 - Use message keys, not hardcoded strings
 - Support right-to-left (RTL) languages
 - Handle different date/number formats
 
 ### 2. Localization (l10n)
+
 - Store translations in standard formats (e.g., .po files)
 - Include context for translators
 - Test with different languages
@@ -984,12 +1084,14 @@ project/
 ## Error Handling and Logging
 
 ### 1. Error Handling
+
 - Use appropriate exception types
 - Include context in error messages
 - Log errors before handling them
 - Provide user-friendly error messages
 
 ### 2. Logging
+
 - Use structured logging
 - Include correlation IDs
 - Log at appropriate levels
@@ -998,12 +1100,14 @@ project/
 ## Version Control Best Practices
 
 ### 1. Branching Strategy
+
 - Use feature branches for new features
 - Create release branches for releases
 - Use semantic versioning for tags
 - Keep main branch deployable
 
 ### 2. Commit Messages
+
 - Use the imperative mood
 - Keep the subject line under 50 characters
 - Include a blank line between subject and body
@@ -1012,12 +1116,14 @@ project/
 ## Continuous Integration/Deployment
 
 ### 1. CI Pipeline
+
 - Run tests on every push
 - Enforce code style
 - Check for security vulnerabilities
 - Generate code coverage reports
 
 ### 2. CD Pipeline
+
 - Automate deployments
 - Use feature flags
 - Implement blue/green deployments
@@ -1026,12 +1132,14 @@ project/
 ## Security Hardening
 
 ### 1. Application Security
+
 - Use secure defaults
 - Implement proper input validation
 - Use parameterized queries
 - Implement rate limiting
 
 ### 2. Infrastructure Security
+
 - Use least privilege principle
 - Encrypt data in transit and at rest
 - Regular security audits
@@ -1040,12 +1148,14 @@ project/
 ## Performance Optimization
 
 ### 1. Frontend
+
 - Minimize and bundle assets
 - Lazy load non-critical resources
 - Optimize images
 - Implement caching strategies
 
 ### 2. Backend
+
 - Optimize database queries
 - Implement caching
 - Use connection pooling
@@ -1054,12 +1164,14 @@ project/
 ## Monitoring and Alerting
 
 ### 1. Application Monitoring
+
 - Track key metrics
 - Set up dashboards
 - Monitor error rates
 - Track performance metrics
 
 ### 2. Alerting
+
 - Set up alerts for critical issues
 - Define on-call rotations
 - Document escalation procedures
@@ -1068,12 +1180,14 @@ project/
 ## Documentation Standards
 
 ### 1. Code Documentation
+
 - Document all public APIs
 - Include examples
 - Document edge cases
 - Keep documentation up to date
 
 ### 2. Project Documentation
+
 - Maintain a README
 - Document setup and installation
 - Include contribution guidelines
@@ -1082,12 +1196,14 @@ project/
 ## Testing Strategy
 
 ### 1. Test Types
+
 - Unit tests
 - Integration tests
 - End-to-end tests
 - Performance tests
 
 ### 2. Test Automation
+
 - Run tests on every PR
 - Enforce code coverage requirements
 - Automate test data management
@@ -1096,12 +1212,14 @@ project/
 ## Security Best Practices
 
 ### 1. Authentication
+
 - Use multi-factor authentication
 - Implement account lockout
 - Use secure password policies
 - Implement session management
 
 ### 2. Data Protection
+
 - Encrypt sensitive data
 - Implement proper key management
 - Follow data minimization principles
@@ -1110,12 +1228,14 @@ project/
 ## Performance Testing
 
 ### 1. Load Testing
+
 - Test under expected peak load
 - Identify bottlenecks
 - Measure response times
 - Monitor resource usage
 
 ### 2. Stress Testing
+
 - Test beyond expected load
 - Identify breaking points
 - Test failover mechanisms
@@ -1124,12 +1244,14 @@ project/
 ## Incident Response
 
 ### 1. Preparation
+
 - Maintain an incident response plan
 - Document escalation paths
 - Keep contact information current
 - Conduct regular drills
 
 ### 2. Response
+
 - Acknowledge the incident
 - Contain the impact
 - Eradicate the cause
@@ -1139,12 +1261,14 @@ project/
 ## Business Continuity
 
 ### 1. Backup Strategy
+
 - Regular backups
 - Test restores
 - Off-site storage
 - Versioned backups
 
 ### 2. Disaster Recovery
+
 - Document recovery procedures
 - Define RTO and RPO
 - Regular testing
@@ -1153,12 +1277,14 @@ project/
 ## Compliance and Auditing
 
 ### 1. Regulatory Compliance
+
 - Document compliance requirements
 - Implement necessary controls
 - Regular audits
 - Maintain evidence
 
 ### 2. Internal Audits
+
 - Regular security assessments
 - Code reviews
 - Penetration testing
@@ -1167,12 +1293,14 @@ project/
 ## Change Management
 
 ### 1. Change Control
+
 - Document all changes
 - Review before implementation
 - Test in staging
 - Rollback plan
 
 ### 2. Release Management
+
 - Version control
 - Release notes
 - Communication plan
@@ -1181,6 +1309,7 @@ project/
 ## Markdown Standards
 
 ### Auto-formatting
+
 - All markdown files must:
   - Have consistent spacing around headings
   - Use proper list indentation (2 spaces)
@@ -1190,6 +1319,7 @@ project/
   - Be wrapped at 120 characters (except code blocks)
 
 ### VS Code Setup
+
 - Install these extensions:
   - DavidAnson.vscode-markdownlint
   - yzhang.markdown-all-in-one
@@ -1197,7 +1327,9 @@ project/
 - Set default formatter to markdownlint
 
 ### Configuration
+
 Add [.markdownlint.json](cci:7://file:///d:/Dev/repos/mcp-server-template/.markdownlint.json:0:0-0:0) to project root:
+
 ```json
 {
   "default": true,
